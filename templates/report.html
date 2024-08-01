@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .filter-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .filter-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .filter-button:hover {
+            background-color: #0056b3;
+        }
+
+        .filter-button.active {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Report</h1>
+    <div class="filter-container">
+        <a href="{{ url_for('report', filter_due='false') }}" class="filter-button {% if not filter_due %}active{% endif %}">Show All</a>
+        <a href="{{ url_for('report', filter_due='true') }}" class="filter-button {% if filter_due %}active{% endif %}">Show Due Only</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Quantity Sold</th>
+                <th>Quantity Purchased</th>
+                <th>Stock Quantity</th>
+                <th>Reorder On</th>
+                <th>Reorder Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in report_data %}
+                <tr>
+                    <td>{{ item.ProductID }}</td>
+                    <td>{{ item.ProductName }}</td>
+                    <td>{{ item.QuantitySold }}</td>
+                    <td>{{ item.QuantityPurchased }}</td>
+                    <td>{{ item.StockQuantity }}</td>
+                    <td>{{ item.ReorderOn }}</td>
+                    <td>{{ item.ReorderStatus }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

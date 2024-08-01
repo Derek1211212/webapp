@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Point</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #00796b; /* Dark teal */
+            margin-bottom: 10px;
+        }
+
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input, select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #00796b; /* Dark teal */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #004d40; /* Darker teal */
+        }
+
+        .view-details-btn {
+            background-color: #004d40; /* Darker teal */
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .view-details-btn:hover {
+            background-color: #00796b; /* Dark teal */
+        }
+    </style>
+</head>
+<body>
+    <h1>Sales Point</h1>
+    
+    <!-- Order Form -->
+    <form action="{{ url_for('add_order') }}" method="post">
+        <label for="order_date">Order Date:</label>
+        <input type="date" name="order_date" required><br>
+
+        <h2>Order Details</h2>
+        <div id="order-items">
+            <div class="order-item">
+                <label for="product_id">Product ID:</label>
+                <select name="product_id" required>
+                    {% for product in products %}
+                        <option value="{{ product.ProductID }}">{{ product.ProductName }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="quantity">Quantity:</label>
+                <input type="number" name="quantity" required>
+
+                <label for="tax">Tax (%):</label>
+                <input type="number" step="0.01" name="tax" required>
+
+                <label for="discount">Discount:</label>
+                <input type="number" step="0.01" name="discount" required>
+
+                <label for="payment_mode">Payment Mode:</label>
+                <input type="text" name="payment_mode" required>
+            </div>
+        </div>
+        
+        <button type="submit">Submit Order</button>
+    </form>
+
+    <!-- Button to View Order Details -->
+    <a href="{{ url_for('order_list') }}" class="view-details-btn">View Order Details</a>
+</body>
+</html>
