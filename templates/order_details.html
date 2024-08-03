@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #00796b; /* Dark teal */
+            margin-bottom: 10px;
+        }
+
+        h2, h3 {
+            color: #004d40; /* Darker teal */
+            margin: 5px 0;
+        }
+
+        table {
+            width: 100%;
+            max-width: 1000px;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        table thead {
+            background-color: #00796b; /* Dark teal */
+            color: white;
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #e0f2f1; /* Light teal */
+        }
+
+        table tbody tr:hover {
+            background-color: #b2dfdb; /* Slightly darker light teal */
+        }
+
+        a {
+            color: #00796b; /* Dark teal */
+            text-decoration: none;
+            font-weight: bold;
+            border: 2px solid #00796b;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #00796b; /* Dark teal */
+            color: white;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+            background-color: #00796b; /* Dark teal */
+            border: 2px solid #00796b;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #004d40; /* Darker teal */
+            border-color: #004d40;
+        }
+
+        .delete-button {
+            background-color: #d32f2f; /* Red */
+            border-color: #d32f2f;
+        }
+
+        .delete-button:hover {
+            background-color: #b71c1c; /* Darker red */
+        }
+
+        .receipt-button {
+            background-color: #0288d1; /* Blue */
+            border-color: #0288d1;
+        }
+
+        .receipt-button:hover {
+            background-color: #01579b; /* Darker blue */
+        }
+    </style>
+</head>
+<body>
+    <h1>Order Details</h1>
+    <h2>Order ID: {{ order.OrderID }}</h2>
+    <h3>Order Date: {{ order.OrderDate }}</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Tax</th>
+                <th>Discount</th>
+                <th>Total Amount</th>
+                <th>Payment Mode</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for detail in order_details %}
+            <tr>
+                <td>{{ detail.ProductName }}</td>
+                <td>{{ detail.Quantity }}</td>
+                <td>{{ detail.Price }}</td>
+                <td>{{ detail.Tax }}</td>
+                <td>{{ detail.Discount }}</td>
+                <td>{{ detail.TotalAmount }}</td>
+                <td>{{ detail.PaymentMode }}</td>
+                <td>
+                    <a href="{{ url_for('edit_order_detail', order_detail_id=detail.OrderDetailsID) }}" class="button">Edit</a>
+                    <form action="{{ url_for('delete_order_detail', order_detail_id=detail.OrderDetailsID) }}" method="POST" style="display:inline;" onsubmit="return confirmDelete();">
+                        <input type="hidden" name="order_id" value="{{ order.OrderID }}">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="button delete-button">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ url_for('invoice', order_id=order.OrderID) }}" class="button receipt-button">Generate Receipt</a>
+    <a href="{{ url_for('add_order') }}" class="button">Back to Sales Point</a>
+
+    <script>
+        function confirmDelete() {
+            return confirm('Are you sure you want to delete this order detail?');
+        }
+    </script>
+</body>
+</html>

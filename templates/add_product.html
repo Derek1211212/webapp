@@ -1,0 +1,157 @@
+{% block content %}
+<style>
+    /* General Styles */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .container {
+        width: 80%;
+        max-width: 1000px;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    h2 {
+        color: #343a40;
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+    }
+
+    label {
+        margin-bottom: 5px;
+        color: #495057;
+        font-weight: 500;
+    }
+
+    input {
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        font-size: 16px;
+        color: #495057;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    button {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin: 0 10px;
+    }
+
+    button:hover {
+        background-color: #218838;
+    }
+
+    button.cancel {
+        background-color: #dc3545;
+    }
+
+    button.cancel:hover {
+        background-color: #c82333;
+    }
+</style>
+
+<div class="container">
+    <h2>Add Product</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="product_name">Product Name:</label>
+            <input type="text" id="product_name" name="product_name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="manufacturer">Manufacturer:</label>
+            <input type="text" id="manufacturer" name="manufacturer" required>
+        </div>
+
+        <div class="form-group">
+            <label for="dosage">Dosage:</label>
+            <input type="text" id="dosage" name="dosage" required>
+        </div>
+
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="number" step="0.01" id="price" name="price" required>
+        </div>
+
+        <div class="form-group">
+            <label for="selling_price">Selling Price:</label>
+            <input type="number" step="0.01" id="selling_price" name="selling_price" required>
+        </div>
+
+        <div class="form-group">
+            <label for="stock_quantity">Stock Quantity:</label>
+            <input type="number" id="stock_quantity" name="stock_quantity" required>
+        </div>
+
+        <div class="form-group">
+            <label for="expiry_date">Expiry Date:</label>
+            <input type="date" id="expiry_date" name="expiry_date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="supplier_id">Supplier ID:</label>
+            <input type="number" id="supplier_id" name="supplier_id" required>
+        </div>
+
+        <div class="form-group">
+            <label for="usage">Usage:</label>
+            <input type="text" id="usage" name="usage" required>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" required>
+        </div>
+
+        <div class="form-group">
+            <label for="mfg_date">Mfg Date:</label>
+            <input type="date" id="mfg_date" name="mfg_date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="drug_type">Drug Type:</label>
+            <input type="text" id="drug_type" name="drug_type" required>
+        </div>
+
+        <div class="form-group">
+            <label for="reorder_on">Reorder On:</label>
+            <input type="number" id="reorder_on" name="reorder_on" required>
+        </div>
+
+        <div class="button-group">
+            <button type="submit">Add Product</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice - {{ order_summary.OrderID }}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            color: #00796b; /* Dark teal */
+            margin-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .company-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .company-info h1 {
+            margin: 0;
+        }
+        .company-info p {
+            margin: 5px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table th, table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        table thead {
+            background-color: #00796b; /* Dark teal */
+            color: white;
+        }
+        table tbody tr:nth-child(even) {
+            background-color: #e0f2f1; /* Light teal */
+        }
+        table tbody tr:hover {
+            background-color: #b2dfdb; /* Slightly darker light teal */
+        }
+        .total {
+            text-align: right;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .print-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+            background-color: #00796b; /* Dark teal */
+            border: 2px solid #00796b;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            text-align: center;
+        }
+        .print-button:hover {
+            background-color: #004d40; /* Darker teal */
+            border-color: #004d40;
+        }
+        @media print {
+            .print-button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="company-info">
+            <h1>Company Name</h1>
+            <p>Company Address Line 1</p>
+            <p>Company Address Line 2</p>
+            <p>City, State, ZIP</p>
+            <p>Phone: (123) 456-7890</p>
+            <p>Email: info@company.com</p>
+        </div>
+
+        <h2>Invoice</h2>
+        <h3>Order ID: {{ order_summary.OrderID }}</h3>
+        <h3>Order Date: {{ order_summary.OrderDate }}</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Selling Price</th>
+                    <th>Discount</th>
+                    <th>Tax</th>
+                    <th>Total Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detail in invoice_details %}
+                <tr>
+                    <td>{{ detail.ProductName }}</td>
+                    <td>{{ detail.Quantity }}</td>
+                    <td>{{ detail.SellingPrice }}</td>
+                    <td>{{ detail.Discount }}</td>
+                    <td>{{ detail.Tax }}</td>
+                    <td>{{ detail.TotalAmount }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="total">
+            <p><strong>Total Payable: </strong>{{ total_payable }}</p>
+        </div>
+
+        <a href="javascript:window.print();" class="print-button">Print Invoice</a>
+    </div>
+</body>
+</html>

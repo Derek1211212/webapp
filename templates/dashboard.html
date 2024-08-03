@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #f0f2f5;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .form-container {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        label {
+            font-size: 1rem;
+            color: #555;
+            margin-right: 10px;
+        }
+
+        input[type="date"] {
+            padding: 5px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 5px 10px;
+            font-size: 1rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            width: 300px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .card:nth-child(1) {
+            background-color: #d1e7dd; /* Light green */
+        }
+
+        .card:nth-child(2) {
+            background-color: #d6e0f0; /* Light blue */
+        }
+
+        .card:nth-child(3) {
+            background-color: #f8d7da; /* Light red */
+        }
+
+        .card:nth-child(4) {
+            background-color: #fff3cd; /* Light yellow */
+        }
+
+        .card:nth-child(5) {
+            background-color: #e2e3e5; /* Light gray */
+        }
+
+        .card:nth-child(6) {
+            background-color: #d4edda; /* Light green */
+        }
+
+        .card:nth-child(7) {
+            background-color: #cce5ff; /* Light blue */
+        }
+
+        .card:nth-child(8) {
+            background-color: #f5c6cb; /* Light red */
+        }
+
+        .card:nth-child(9) {
+            background-color: #ffeeba; /* Light yellow */
+        }
+
+        .figure {
+            font-size: 2rem;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            font-size: 1.2rem;
+            color: #555;
+            font-weight: 300;
+            margin: 0;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <div class="form-container">
+        <form method="GET" action="{{ url_for('dashboard') }}">
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" required>
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date" required>
+            <button type="submit">Filter</button>
+        </form>
+    </div>
+    <div class="cards-container">
+        <div class="card">
+            <div class="figure">{{ stats.total_stock_quantity }}</div>
+            <div class="description">Total Stock Quantity</div>
+        </div>
+        <div class="card">
+            <div class="figure">{{ stats.total_paid }}</div>
+            <div class="description">Total Amount Paid for Goods</div>
+        </div>
+        <div class="card">
+            <div class="figure">{{ stats.total_expenses }}</div>
+            <div class="description">Total Expenses</div>
+        </div>
+        <div class="card">
+            <div class="figure">{{ stats.total_quantity_sold }}</div>
+            <div class="description">Total Quantity Sold</div>
+        </div>
+        <div class="card">
+            <div class="figure">{{ stats.total_quantity_purchased }}</div>
+            <div class="description">Total Quantity Purchased</div>
+        </div>
+        <div class="card">
+            <div class="figure">{{ stats.balance_to_pay_suppliers }}</div>
+            <div class="description">Balance to Pay Suppliers</div>
+        </div>
+        <div class="card">
+            <div class="figure">{{ stats.total_sales_amount }}</div>
+            <div class="description">Total Sales Amount</div>
+        </div>
+        <div class="card">
+            <div class="figure">{{ stats.low_stock_products }}</div>
+            <div class="description">Low Stock Products</div>
+        </div>
+        <div class="card">
+            <div class="figure">{{ stats.expiring_soon_products }}</div>
+            <div class="description">Expiring Soon Products</div>
+        </div>
+    </div>
+</body>
+</html>
