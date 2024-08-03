@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -120,3 +121,127 @@
     </div>
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profit Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #00796b; /* Dark teal */
+            margin-bottom: 10px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="date"] {
+            margin-right: 10px;
+        }
+
+        table {
+            width: 100%;
+            max-width: 1200px;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table thead {
+            background-color: #00796b; /* Dark teal */
+            color: white;
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #e0f2f1; /* Light teal */
+        }
+
+        table tbody tr:hover {
+            background-color: #b2dfdb; /* Slightly darker light teal */
+        }
+
+        .total-profit {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #00796b; /* Dark teal */
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        a {
+            color: #00796b; /* Dark teal */
+            text-decoration: none;
+            font-weight: bold;
+            border: 2px solid #00796b;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #00796b; /* Dark teal */
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Profit Report</h1>
+    <form method="POST">
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date" value="{{ start_date }}">
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date" value="{{ end_date }}">
+        <button type="submit">Filter</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Product ID</th>
+                <th>Total Quantity</th>
+                <th>Total Profit</th>
+                <th>First Order Date</th>
+                <th>Last Order Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for profit in profits %}
+            <tr>
+                <td>{{ profit.ProductName }}</td>
+                <td>{{ profit.ProductID }}</td>
+                <td>{{ profit.TotalQuantity }}</td>
+                <td>{{ profit.TotalProfit | round(2) }}</td>
+                <td>{{ profit.FirstOrderDate }}</td>
+                <td>{{ profit.LastOrderDate }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total-profit">
+        Grand Total Profit: ${{ grand_total_profit | round(2) }}
+    </div>
+</body>
+</html>
+>>>>>>> 910b7c36011231e8d20bd8149b8f34f52b42ac3d

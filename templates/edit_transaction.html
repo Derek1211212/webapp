@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% block content %}
 <style>
     /* General Styles */
@@ -207,3 +208,214 @@
     }
 </script>
 {% endblock %}
+=======
+{% block content %}
+<style>
+    /* General Styles */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #e9ecef;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .container {
+        width: 80%;
+        max-width: 1000px;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    h2 {
+        color: #495057;
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 24px;
+        font-weight: 600;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+    }
+
+    label {
+        margin-bottom: 5px;
+        color: #495057;
+        font-weight: 500;
+    }
+
+    input, select, textarea {
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        font-size: 16px;
+        color: #495057;
+    }
+
+    textarea {
+        resize: vertical;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    button.cancel {
+        background-color: #6c757d;
+    }
+
+    button.cancel:hover {
+        background-color: #5a6268;
+    }
+</style>
+
+<div class="container">
+    <h2>Edit Inventory Transaction</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="transaction_date">Transaction Date:</label>
+            <input type="date" id="transaction_date" name="transaction_date" value="{{ transaction.TransactionDate }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="supplier_id">Supplier Name:</label>
+            <select id="supplier_id" name="supplier_id" required>
+                {% for supplier in suppliers %}
+                    <option value="{{ supplier.SupplierID }}" {% if supplier.SupplierID == transaction.SupplierID %}selected{% endif %}>{{ supplier.SupplierName }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="product_id">Product Name:</label>
+            <select id="product_id" name="product_id" onchange="updateUnitPrice()" required>
+                {% for product in products %}
+                    <option value="{{ product.ProductID }}" {% if product.ProductID == transaction.ProductID %}selected{% endif %}>{{ product.ProductName }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" value="{{ transaction.Quantity }}" required oninput="updateTotalAndBalance()">
+        </div>
+
+        <div class="form-group">
+            <label for="unit_price">Unit Price:</label>
+            <input type="number" id="unit_price" name="unit_price" step="0.01" value="{{ transaction.UnitPrice }}" readonly>
+        </div>
+
+        <div class="form-group">
+            <label for="total_amount">Total Amount:</label>
+            <input type="number" id="total_amount" name="total_amount" step="0.01" value="{{ transaction.TotalAmount }}" readonly>
+        </div>
+
+        <div class="form-group">
+            <label for="paid">Paid:</label>
+            <input type="number" id="paid" name="paid" step="0.01" value="{{ transaction.Paid }}" required oninput="updateBalance()">
+        </div>
+
+        <div class="form-group">
+            <label for="balance">Balance:</label>
+            <input type="number" id="balance" name="balance" step="0.01" value="{{ transaction.Balance }}" readonly>
+        </div>
+
+        <div class="form-group">
+            <label for="through">Through:</label>
+            <select id="through" name="through" required>
+                <option value="cash" {% if transaction.Through == 'cash' %}selected{% endif %}>Cash</option>
+                <option value="bank" {% if transaction.Through == 'bank' %}selected{% endif %}>Bank</option>
+                <option value="credit card" {% if transaction.Through == 'credit card' %}selected{% endif %}>Credit Card</option>
+                <option value="mobile money" {% if transaction.Through == 'mobile money' %}selected{% endif %}>Mobile Money</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="status">Status:</label>
+            <select id="status" name="status" required>
+                <option value="received" {% if transaction.Status == 'received' %}selected{% endif %}>Received</option>
+                <option value="yet to be received" {% if transaction.Status == 'yet to be received' %}selected{% endif %}>Yet to be Received</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="transaction_no">Transaction No:</label>
+            <input type="text" id="transaction_no" name="transaction_no" value="{{ transaction.TransactionNo }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="narration">Narration:</label>
+            <textarea id="narration" name="narration">{{ transaction.Narration }}</textarea>
+        </div>
+
+        <div class="button-group">
+            <button type="submit">Save Changes</button>
+            <button type="button" class="cancel" onclick="window.location.href='{{ url_for('show_all_transactions') }}'">Cancel</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const products = {{ products|tojson|safe }};
+
+    function updateUnitPrice() {
+        const productId = document.getElementById('product_id').value;
+        const unitPriceField = document.getElementById('unit_price');
+
+        const selectedProduct = products.find(product => product.ProductID == productId);
+        if (selectedProduct) {
+            unitPriceField.value = selectedProduct.Price;
+            updateTotalAndBalance();
+        }
+    }
+
+    function updateTotalAndBalance() {
+        const quantity = parseFloat(document.getElementById('quantity').value) || 0;
+        const unitPrice = parseFloat(document.getElementById('unit_price').value) || 0;
+        const totalAmountField = document.getElementById('total_amount');
+        const paidField = document.getElementById('paid');
+        const balanceField = document.getElementById('balance');
+
+        const totalAmount = quantity * unitPrice;
+        totalAmountField.value = totalAmount.toFixed(2);
+
+        updateBalance();
+    }
+
+    function updateBalance() {
+        const totalAmount = parseFloat(document.getElementById('total_amount').value) || 0;
+        const paid = parseFloat(document.getElementById('paid').value) || 0;
+        const balanceField = document.getElementById('balance');
+
+        const balance = totalAmount - paid;
+        balanceField.value = balance.toFixed(2);
+    }
+</script>
+{% endblock %}
+>>>>>>> 910b7c36011231e8d20bd8149b8f34f52b42ac3d

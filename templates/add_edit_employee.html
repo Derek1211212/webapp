@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'layout.html' %}
 
 {% block content %}
@@ -90,3 +91,97 @@
     </div>
 </form>
 {% endblock %}
+=======
+{% extends 'layout.html' %}
+
+{% block content %}
+<style>
+    /* General Styles */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f6f8;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h2 {
+        color: #343a40;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    form {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #495057;
+        font-weight: 600;
+    }
+
+    input {
+        width: calc(100% - 22px);
+        padding: 12px;
+        margin-bottom: 15px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    button {
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-right: 10px;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .button-group {
+        text-align: center;
+        margin-top: 20px;
+    }
+</style>
+
+<h2>{% if employee %}Edit{% else %}Add{% endif %} Employee</h2>
+
+<form method="POST">
+    <label for="first_name">First Name:</label>
+    <input type="text" id="first_name" name="first_name" value="{{ employee.FirstName if employee else '' }}" required>
+    
+    <label for="last_name">Last Name:</label>
+    <input type="text" id="last_name" name="last_name" value="{{ employee.LastName if employee else '' }}" required>
+    
+    <label for="position">Position:</label>
+    <input type="text" id="position" name="position" value="{{ employee.Position if employee else '' }}" required>
+    
+    <label for="hire_date">Hire Date:</label>
+    <input type="date" id="hire_date" name="hire_date" value="{{ employee.HireDate if employee else '' }}" required>
+    
+    <label for="salary">Salary:</label>
+    <input type="number" id="salary" name="salary" step="0.01" value="{{ employee.Salary if employee else '' }}" required>
+    
+    <div class="button-group">
+        <button type="submit">Save</button>
+        <button type="button" onclick="window.location.href='{{ url_for('show_all_employees') }}'">View Employee List</button>
+        <button type="button" onclick="window.location.href='{{ url_for('show_all_employees') }}'">Cancel</button>
+    </div>
+</form>
+{% endblock %}
+>>>>>>> 910b7c36011231e8d20bd8149b8f34f52b42ac3d

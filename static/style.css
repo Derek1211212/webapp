@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
@@ -9,3 +10,16 @@ header {
     background-color: #3b5998;
     color: white;
     padding:
+=======
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #3b5998;
+    color: white;
+    padding:
+>>>>>>> 910b7c36011231e8d20bd8149b8f34f52b42ac3d
