@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from flask import Flask, render_template, request, redirect, url_for, flash, session, g
 import mysql.connector
 from mysql.connector import Error
@@ -1229,7 +1228,6 @@ def invoice(order_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
-=======
 from flask import Flask, render_template, request, redirect, url_for, flash, session, g
 import mysql.connector
 from mysql.connector import Error
@@ -2291,4 +2289,3 @@ def reset_password():
 
 if __name__ == '__main__':
     app.run(debug=True)
->>>>>>> 910b7c36011231e8d20bd8149b8f34f52b42ac3d
