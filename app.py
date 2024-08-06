@@ -855,6 +855,27 @@ def show_all_expenses():
     
     return render_template('show_all_expenses.html', expenses=expenses, search_query=search_query)
 
+
+@app.route('/delete_expense/<int:expense_id>', methods=['POST'])
+def delete_expense(expense_id):
+    db = get_db()
+    cursor = db.cursor()
+    
+    try:
+        # Execute the deletion query
+        cursor.execute("DELETE FROM expenses WHERE ExpenseID = %s", (expense_id,))
+        db.commit()
+        # Optionally, flash a success message
+        flash('Expense successfully deleted.', 'success')
+    except Exception as e:
+        # Print the error for debugging purposes
+        print(f"An error occurred: {e}")
+        # Optionally, flash an error message
+        flash('An error occurred while deleting the expense. Please try again.', 'error')
+    
+    return redirect(url_for('show_all_expenses'))
+    
+
 @app.route('/order_list')
 @login_required
 def order_list():
@@ -1253,13 +1274,9 @@ def payment_confirmation():
 def view_transactions():
     db = get_db()
     cursor = db.cursor(dictionary=True)
-    
-    # Query to get all payment records
     cursor.execute("SELECT * FROM payments ORDER BY created_at DESC")
     payments = cursor.fetchall()
-    
     return render_template('view_transactions.html', payments=payments)
-
 
 
 if __name__ == '__main__':
