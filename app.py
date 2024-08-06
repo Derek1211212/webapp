@@ -1048,21 +1048,21 @@ def profit_report():
         JOIN orders o ON od.OrderID = o.OrderID
     """
     
+    total_profit_params = []
     if start_date and end_date:
         total_profit_query += " WHERE o.OrderDate BETWEEN %s AND %s"
-        params.extend([start_date, end_date])
+        total_profit_params.extend([start_date, end_date])
     elif start_date:
         total_profit_query += " WHERE o.OrderDate >= %s"
-        params.append(start_date)
+        total_profit_params.append(start_date)
     elif end_date:
         total_profit_query += " WHERE o.OrderDate <= %s"
-        params.append(end_date)
+        total_profit_params.append(end_date)
     
-    cursor.execute(total_profit_query, params)
+    cursor.execute(total_profit_query, total_profit_params)
     grand_total_profit = cursor.fetchone()['GrandTotalProfit'] or 0
 
     return render_template('profit_report.html', profits=profits, start_date=start_date, end_date=end_date, grand_total_profit=grand_total_profit)
-
 
 
 @app.route('/forgot-password', methods=['GET'])
