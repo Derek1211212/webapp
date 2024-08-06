@@ -1256,7 +1256,7 @@ def view_transactions():
     
     # Query to get all payment records
     cursor.execute("SELECT * FROM payments ORDER BY created_at DESC")
-    transactions = cursor.fetchall()
+    payments = cursor.fetchall()
     
     return render_template('view_transactions.html', payments=payments)
 
