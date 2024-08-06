@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f6f8;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .button-group {
+            text-align: center;
+        }
+        .button-group button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .button-group button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Transaction History</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Reference</th>
+                <th>Email</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.id }}</td>
+                    <td>{{ transaction.reference }}</td>
+                    <td>{{ transaction.email }}</td>
+                    <td>{{ transaction.amount / 100 }}</td> <!-- Assuming amount is stored in kobo/cents -->
+                    <td>{{ transaction.status }}</td>
+                    <td>{{ transaction.created_at }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="button-group">
+        <button type="button" onclick="window.location.href='{{ url_for('home') }}'">Home</button>
+    </div>
+</body>
+</html>
