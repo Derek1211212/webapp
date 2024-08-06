@@ -4,6 +4,8 @@ from mysql.connector import Error
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 from functools import wraps
+from flask import jsonify
+
 
 app = Flask(__name__)
 app.secret_key = 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1f2g3h4i5j6k7l8m9n0o1p2q3r4s5t6u7v8w9x0y1z2' 
@@ -1223,5 +1225,30 @@ def invoice(order_id):
     order_summary = cursor.fetchone()
 
     return render_template('invoice.html', order_summary=order_summary, invoice_details=details, total_payable=total_payable)
+
+@app.route('/payment_confirmation', methods=['POST'])
+def payment_confirmation():
+    data = request.get_json()
+    reference = data.get('reference')
+    email = data.get('email')
+    amount = data.get('amount')
+
+    db = get_db()
+    cursor = db.cursor()
+
+    try:
+        # Save payment details to database
+        query = """
+            INSERT INTO payments (reference, email, amount, status)
+            VALUES (%s, %s, %s, 'completed')
+        """
+        cursor.execute(query, (reference, email, amount))
+        db.commit()
+        return jsonify({'status': 'success', 'message': 'Payment details recorded.'}), 200
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return jsonify({'status': 'error', 'message': 'Failed to record payment details.'}), 500
+
+
 if __name__ == '__main__':
     app.run(debug=True)
