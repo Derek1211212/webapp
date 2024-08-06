@@ -84,6 +84,21 @@
             font-size: 16px;
         }
 
+        /* Close button for sidebar */
+        .sidebar .close-btn {
+            background-color: #00796b; /* Dark teal */
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border-radius: 50%;
+            z-index: 2; /* Ensure it's above the content */
+        }
+
         /* Header and main content */
         .content {
             margin-left: 0;
@@ -100,7 +115,7 @@
             text-align: center;
             position: fixed;
             top: 0;
-            left: 0px;
+            left: 0;
             width: 100%;
             z-index: 0; /* Ensure it's above the content */
             box-sizing: border-box;
@@ -219,6 +234,10 @@
                 transform: translateX(0);
             }
 
+            .sidebar .close-btn {
+                display: inline-block;
+            }
+
             header .toggle-sidebar {
                 display: inline-block;
             }
@@ -264,6 +283,7 @@
         </nav>
     </header>
     <div class="sidebar">
+        <button class="close-btn" onclick="toggleSidebar()">×</button>
         <img src="{{ url_for('static', filename='images/pharmacy.png') }}" alt="Pharmacy Logo" class="logo">
         <div class="menu-title">DATA PULZE PHARMACY</div>
         <ul>
@@ -301,8 +321,13 @@
         <main>
             <img src="{{ url_for('static', filename='images/ff.jpg') }}" alt="Pharmacy Image" class="main-image">
         </main>
-        
     </div>
+    <footer>
+        <p>&copy; 2024 Our Pharmacy</p>
+        <form action="{{ url_for('logout') }}" method="post">
+            <button type="submit" class="logout-button">Logout</button>
+        </form>
+    </footer>
     <script>
         function toggleSidebar() {
             var sidebar = document.querySelector('.sidebar');
@@ -310,10 +335,4 @@
         }
     </script>
 </body>
-<footer>
-            <p>&copy; 2024 Our Pharmacy</p>
-            <form action="{{ url_for('logout') }}" method="post">
-                <button type="submit" class="logout-button">Logout</button>
-            </form>
-        </footer>
 </html>
