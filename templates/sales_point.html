@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,10 +87,12 @@
             background-color: #004d40; /* Darker teal */
         }
     </style>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const addItemBtn = document.getElementById('addItemBtn');
             const orderItems = document.getElementById('order-items');
+            const paymentForm = document.getElementById('paymentForm');
 
             addItemBtn.addEventListener('click', function() {
                 const orderItemDiv = document.createElement('div');
@@ -119,6 +120,47 @@
                 `;
                 
                 orderItems.appendChild(orderItemDiv);
+            });
+
+            paymentForm.addEventListener("submit", function(e) {
+                e.preventDefault();
+
+                let handler = PaystackPop.setup({
+                    key: 'pk_test_687e15c55aa4b8225311e136ff9c267baf07ec4b', // Replace with your public key
+                    email: document.getElementById("email-address").value,
+                    amount: document.getElementById("amount").value * 100,
+                    currency: 'GHS',
+                    ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference
+                    onClose: function(){
+                        alert('Window closed.');
+                    },
+                    callback: function(response){
+                        let message = 'Payment complete! Reference: ' + response.reference;
+                        alert(message);
+
+                        // Send payment data to your server
+                        fetch('/payment_confirmation', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                reference: response.reference,
+                                email: document.getElementById("email-address").value,
+                                amount: document.getElementById("amount").value
+                            }),
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Success:', data);
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+                    }
+                });
+
+                handler.openIframe();
             });
         });
     </script>
@@ -157,6 +199,17 @@
         
         <button type="button" id="addItemBtn" class="add-item-btn">Add Another Item</button>
         <button type="submit">Submit Order</button>
+    </form>
+
+    <!-- Payment Form -->
+    <form id="paymentForm">
+        <label for="email-address">Email:</label>
+        <input type="email" id="email-address" name="email" required>
+        
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" step="0.01" required>
+        
+        <button type="submit">Pay with Paystack</button>
     </form>
 
     <!-- Button to View Order Details -->
