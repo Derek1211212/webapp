@@ -310,6 +310,7 @@ def add_order():
     return render_template('sales_point.html', products=products)
 
 
+
 @app.route('/order/<int:order_id>')
 @login_required
 def order_details(order_id):
@@ -874,7 +875,7 @@ def delete_expense(expense_id):
         flash('An error occurred while deleting the expense. Please try again.', 'error')
     
     return redirect(url_for('show_all_expenses'))
-    
+
 
 @app.route('/order_list')
 @login_required
