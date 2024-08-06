@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,80 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pharmacy Homepage</title>
     <style>
-/* Add this to your existing CSS */
-
-/* Mobile devices (max-width: 768px) */
-@media only screen and (max-width: 768px) {
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
-    top: 0;
-    left: 0;
-    padding: 10px;
-    box-shadow: none;
-  }
-  .content {
-    margin-left: 0;
-    padding: 10px;
-    width: 100%;
-  }
-  header {
-    position: relative;
-    top: 0;
-    left: 0;
-    width: 100%;
-  }
-  .main-image {
-    width: 100%;
-    max-width: none;
-    height: auto;
-    margin: 20px auto;
-  }
-  footer {
-    position: relative;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-  }
-}
-
-/* Tablet devices (min-width: 769px) and (max-width: 1024px) */
-@media only screen and (min-width: 769px) and (max-width: 1024px) {
-  .sidebar {
-    width: 250px;
-  }
-  .content {
-    margin-left: 250px;
-  }
-  header {
-    width: calc(100% - 250px);
-  }
-}
-
-/* Desktop devices (min-width: 1025px) */
-@media only screen and (min-width: 1025px) {
-  /* No changes needed, as the original styles will apply */
-}        
         /* General styling */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            display: flex;
             background-color: #f7f9fc;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Sidebar */
         .sidebar {
             background-color: #e0f2f1; /* Light green */
-            width: 200px;
+            width: 250px;
             height: 100vh;
             position: fixed;
             top: 0;
             left: 0;
             padding: 20px;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
         }
 
         .sidebar img.logo {
@@ -132,9 +83,11 @@
 
         /* Header and main content */
         .content {
-            margin-left: 300px;
+            margin-left: 0;
             padding: 20px;
-            width: calc(100% - 300px);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         header {
@@ -144,16 +97,31 @@
             text-align: center;
             position: fixed;
             top: 0;
-            border-radius: 10px;
-            left: 245px; /* Align with the content area */
-            width: calc(100% - 150px); /* Adjust width for the sidebar */
+            left: 0;
+            width: 100%;
             z-index: 2; /* Ensure it's above the content */
+            box-sizing: border-box;
         }
 
         header h1 {
             margin: 0;
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 600;
+        }
+
+        header .toggle-sidebar {
+            display: none;
+            background-color: #00796b; /* Dark teal */
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            border-radius: 5px;
+            z-index: 3; /* Ensure it's above the content */
         }
 
         nav ul {
@@ -161,7 +129,9 @@
             padding: 0;
             margin: 10px 0 0;
             display: flex;
-            gap: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
         }
 
         nav ul li {
@@ -179,12 +149,12 @@
         }
 
         .main-image {
-            width: 80%;
+            width: 100%;
             max-width: 700px;
             height: auto;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin: 110px auto;
+            margin: 80px auto 20px;
             display: block;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
@@ -200,10 +170,10 @@
             text-align: center;
             padding: 10px 20px;
             border-radius: 10px;
-            position: fixed;
+            position: relative;
             bottom: 0;
-            left: 250px;
-            width: calc(100% - 200px);
+            width: 100%;
+            box-sizing: border-box;
             box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
         }
 
@@ -228,9 +198,66 @@
         .logout-button:hover {
             background-color: #d32f2f; /* Darker red */
         }
+
+        /* Media Queries for responsiveness */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                max-width: 100%;
+                height: auto;
+                position: absolute;
+                transform: translateX(-100%);
+                z-index: 1; /* Behind other content */
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            header .toggle-sidebar {
+                display: inline-block;
+            }
+
+            .content {
+                margin-left: 0;
+                padding-top: 80px; /* Space for fixed header */
+            }
+
+            header {
+                padding: 10px;
+                position: relative;
+                width: 100%;
+            }
+
+            .main-image {
+                width: 100%;
+                margin: 10px auto;
+            }
+
+            footer {
+                padding: 10px;
+                position: relative;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
+    <header>
+        <button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
+        <h1>DATA PULZE PHARMACY</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('view_products') }}">View Products</a></li>
+                <li><a href="{{ url_for('add_product') }}">Add Product</a></li>
+                <li><a href="{{ url_for('report') }}">Inventory Reorder Level</a></li>
+                <li><a href="{{ url_for('expiring_products') }}">Expiring Within 30 Days</a></li>
+                <li><a href="{{ url_for('sales_report') }}">Sales Report</a></li>
+                <li><a href="{{ url_for('profit_report') }}">Profit Report</a></li>
+                <li><a href="{{ url_for('view_transactions') }}">Online Payment History</a></li>
+            </ul>
+        </nav>
+    </header>
     <div class="sidebar">
         <img src="{{ url_for('static', filename='images/pharmacy.png') }}" alt="Pharmacy Logo" class="logo">
         <div class="menu-title">DATA PULZE PHARMACY</div>
@@ -266,29 +293,21 @@
         </ul>
     </div>
     <div class="content">
-        <header>
-            <h1>DATA PULZE PHARMARCY</h1>
-            <nav>
-                <ul>
-                    <li><a href="{{ url_for('view_products') }}">View Products</a></li>
-                    <li><a href="{{ url_for('add_product') }}">Add Product</a></li>
-                    <li><a href="{{ url_for('report') }}">Inventory Reorder Level</a></li>
-                    <li><a href="{{ url_for('sales_report') }}">Sales Report</a></li>
-                    <li><a href="{{ url_for('profit_report') }}">Profit Report</a></li>
-                    <li><a href="{{ url_for('view_transactions') }}">Online Payment History</a></li>
-                </ul>
-            </nav>
-           
-        </header>
         <main>
-            <img src="{{ url_for('static', filename='images/ff.jpg') }}" alt="Pharmacy Image" class="main-image">
+            <img src="{{ url_for('static', filename='images/pharmacy_homepage.jpg') }}" alt="Pharmacy Image" class="main-image">
         </main>
         <footer>
             <p>&copy; 2024 Our Pharmacy</p>
-             <form action="{{ url_for('logout') }}" method="post">
+            <form action="{{ url_for('logout') }}" method="post">
                 <button type="submit" class="logout-button">Logout</button>
             </form>
         </footer>
     </div>
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('show');
+        }
+    </script>
 </body>
 </html>
