@@ -1249,6 +1249,18 @@ def payment_confirmation():
         print(f"An error occurred: {e}")
         return jsonify({'status': 'error', 'message': 'Failed to record payment details.'}), 500
 
+@app.route('/view_transactions', methods=['GET'])
+def view_transactions():
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+    
+    # Query to get all payment records
+    cursor.execute("SELECT * FROM payments ORDER BY created_at DESC")
+    transactions = cursor.fetchall()
+    
+    return render_template('view_transactions.html', transactions=transactions)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
