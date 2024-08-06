@@ -1066,7 +1066,7 @@ def profit_report():
 
 
 @app.route('/forgot-password', methods=['GET'])
-@login_required
+
 def forgot_password():
     db = get_db()
     cursor = db.cursor()
