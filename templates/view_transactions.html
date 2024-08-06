@@ -10,27 +10,52 @@
             margin: 0;
             padding: 20px;
             background-color: #f4f6f8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
+
+        h1 {
+            color: #007bff;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         th, td {
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #dee2e6;
+            word-wrap: break-word; /* Ensure text wraps within cells */
         }
+
         th {
             background-color: #007bff;
             color: white;
         }
+
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
+
         .button-group {
             text-align: center;
+            margin-top: 20px;
         }
+
         .button-group button {
             background-color: #007bff;
             color: #ffffff;
@@ -39,29 +64,61 @@
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
-            margin: 5px;
             transition: background-color 0.3s ease;
+            margin: 5px;
         }
+
         .button-group button:hover {
             background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            .button-group button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 20px;
+            }
+
+            .button-group button {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
         }
     </style>
 </head>
 <body>
     <h1>Transaction History</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Reference</th>
-                <th>Email</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Created At</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for payments in payments %}
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Reference</th>
+                    <th>Email</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payments in payments %}
                 <tr>
                     <td>{{ payments.id }}</td>
                     <td>{{ payments.reference }}</td>
@@ -70,9 +127,10 @@
                     <td>{{ payments.status }}</td>
                     <td>{{ payments.created_at }}</td>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <div class="button-group">
         <button type="button" onclick="window.location.href='{{ url_for('home') }}'">Home</button>
     </div>
