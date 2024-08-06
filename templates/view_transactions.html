@@ -61,14 +61,14 @@
             </tr>
         </thead>
         <tbody>
-            {% for transaction in transactions %}
+            {% for payments in payments %}
                 <tr>
-                    <td>{{ transaction.id }}</td>
-                    <td>{{ transaction.reference }}</td>
-                    <td>{{ transaction.email }}</td>
-                    <td>{{ transaction.amount / 100 }}</td> <!-- Assuming amount is stored in kobo/cents -->
-                    <td>{{ transaction.status }}</td>
-                    <td>{{ transaction.created_at }}</td>
+                    <td>{{ payments.id }}</td>
+                    <td>{{ payments.reference }}</td>
+                    <td>{{ payments.email }}</td>
+                    <td>{{ payments.amount }}</td> <!-- Assuming amount is stored in kobo/cents -->
+                    <td>{{ payments.status }}</td>
+                    <td>{{ payments.created_at }}</td>
                 </tr>
             {% endfor %}
         </tbody>
