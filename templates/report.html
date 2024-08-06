@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,58 +6,41 @@
     <title>Product Report</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
             margin: 0;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        th, td {
-            border: 1px solid #ccc;
-            padding: 12px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #007bff;
-            color: white;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 700;
         }
 
         .filter-container {
-            margin-bottom: 20px;
             display: flex;
             justify-content: center;
             gap: 20px;
+            margin-bottom: 20px;
         }
 
         .filter-button {
             padding: 10px 20px;
             background-color: #007bff;
-            color: white;
+            color: #ffffff;
             border: none;
             border-radius: 5px;
+            font-size: 16px;
             cursor: pointer;
             text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
         }
 
         .filter-button:hover {
@@ -68,6 +50,83 @@
         .filter-button.active {
             background-color: #0056b3;
         }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto;
+            font-size: 16px;
+            table-layout: auto; /* Allow table to adjust column widths */
+        }
+
+        thead {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #dee2e6;
+            text-align: left;
+            word-wrap: break-word; /* Ensure text wraps within cells */
+        }
+
+        th {
+            font-weight: bold;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            .filter-button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 20px;
+            }
+
+            .filter-button {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            table {
+                font-size: 12px;
+                overflow-x: auto; /* Allow horizontal scrolling if necessary */
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+
+        /* Container to handle overflow */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
     </style>
 </head>
 <body>
@@ -76,32 +135,33 @@
         <a href="{{ url_for('report', filter_due='false') }}" class="filter-button {% if not filter_due %}active{% endif %}">Show All</a>
         <a href="{{ url_for('report', filter_due='true') }}" class="filter-button {% if filter_due %}active{% endif %}">Show Due Only</a>
     </div>
-    <table>
-        <thead>
-            <tr>
-                <th>Product ID</th>
-                <th>Product Name</th>
-                <th>Quantity Sold</th>
-                <th>Quantity Purchased</th>
-                <th>Stock Quantity</th>
-                <th>Reorder On</th>
-                <th>Reorder Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in report_data %}
+    <div class="table-container">
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ item.ProductID }}</td>
-                    <td>{{ item.ProductName }}</td>
-                    <td>{{ item.QuantitySold }}</td>
-                    <td>{{ item.QuantityPurchased }}</td>
-                    <td>{{ item.StockQuantity }}</td>
-                    <td>{{ item.ReorderOn }}</td>
-                    <td>{{ item.ReorderStatus }}</td>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Quantity Sold</th>
+                    <th>Quantity Purchased</th>
+                    <th>Stock Quantity</th>
+                    <th>Reorder On</th>
+                    <th>Reorder Status</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for item in report_data %}
+                    <tr>
+                        <td>{{ item.ProductID }}</td>
+                        <td>{{ item.ProductName }}</td>
+                        <td>{{ item.QuantitySold }}</td>
+                        <td>{{ item.QuantityPurchased }}</td>
+                        <td>{{ item.StockQuantity }}</td>
+                        <td>{{ item.ReorderOn }}</td>
+                        <td>{{ item.ReorderStatus }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
-
