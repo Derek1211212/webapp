@@ -25,6 +25,7 @@
             left: 0;
             padding: 20px;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 1;
             overflow-y: auto;
             transition: transform 0.3s ease;
         }
@@ -34,10 +35,12 @@
         }
 
         .sidebar img.logo {
-            width: 100%;
+            width: 60%;
             height: auto;
             display: block;
             margin-bottom: 20px;
+            margin-left: 50px;
+            align-self: center;
         }
 
         .sidebar .menu-title {
@@ -97,9 +100,9 @@
             text-align: center;
             position: fixed;
             top: 0;
-            left: 0;
+            left: 30px;
             width: 100%;
-            z-index: 2; /* Ensure it's above the content */
+            z-index: 0; /* Ensure it's above the content */
             box-sizing: border-box;
         }
 
@@ -154,9 +157,11 @@
             height: auto;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin: 80px auto 20px;
+            margin: 80px auto 70px;
+            margin-left: 500px;
             display: block;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            align-self: center;
         }
 
         .main-image:hover {
@@ -168,9 +173,9 @@
             background-color: #00796b; /* Dark teal */
             color: white;
             text-align: center;
-            padding: 10px 20px;
+            padding: 1px 10px;
             border-radius: 10px;
-            position: relative;
+            position: fixed;
             bottom: 0;
             width: 100%;
             box-sizing: border-box;
