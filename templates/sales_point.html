@@ -86,15 +86,7 @@
         .add-item-btn:hover {
             background-color: #004d40; /* Darker teal */
         }
-
-        .select2-container {
-            width: 100% !important; /* Ensures that Select2 takes full width of its container */
-        }
-    <script src="https://js.paystack.co/v1/inline.js"></script>    
     </style>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/css/select2.min.css" rel="stylesheet" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/js/select2.min.js"></script>
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -108,7 +100,7 @@
                 
                 orderItemDiv.innerHTML = `
                     <label for="product_id">Product ID:</label>
-                    <select name="product_id" class="product-select" required>
+                    <select name="product_id" required>
                         {% for product in products %}
                             <option value="{{ product.ProductID }}">{{ product.ProductName }}</option>
                         {% endfor %}
@@ -128,18 +120,6 @@
                 `;
                 
                 orderItems.appendChild(orderItemDiv);
-
-                // Initialize Select2
-                $('.product-select').select2({
-                    placeholder: 'Select a product',
-                    width: '100%'
-                });
-            });
-
-            // Initialize Select2 on existing dropdowns
-            $('.product-select').select2({
-                placeholder: 'Select a product',
-                width: '100%'
             });
 
             paymentForm.addEventListener("submit", function(e) {
@@ -197,7 +177,7 @@
         <div id="order-items">
             <div class="order-item">
                 <label for="product_id">Product ID:</label>
-                <select name="product_id" class="product-select" required>
+                <select name="product_id" required>
                     {% for product in products %}
                         <option value="{{ product.ProductID }}">{{ product.ProductName }}</option>
                     {% endfor %}
