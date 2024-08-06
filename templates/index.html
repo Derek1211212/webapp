@@ -18,7 +18,7 @@
         /* Sidebar */
         .sidebar {
             background-color: #e0f2f1; /* Light green */
-            width: 250px;
+            width: 220px;
             height: 100vh;
             position: fixed;
             top: 0;
@@ -100,7 +100,7 @@
             text-align: center;
             position: fixed;
             top: 0;
-            left: 30px;
+            left: 0px;
             width: 100%;
             z-index: 0; /* Ensure it's above the content */
             box-sizing: border-box;
@@ -183,7 +183,7 @@
         }
 
         footer p {
-            margin: 5px 0;
+            margin: 0px 0;
         }
 
         /* Logout Button Style */
@@ -241,7 +241,7 @@
 
             footer {
                 padding: 10px;
-                position: relative;
+                position: fixed;
                 width: 100%;
             }
         }
@@ -301,12 +301,7 @@
         <main>
             <img src="{{ url_for('static', filename='images/pharmacy_homepage.jpg') }}" alt="Pharmacy Image" class="main-image">
         </main>
-        <footer>
-            <p>&copy; 2024 Our Pharmacy</p>
-            <form action="{{ url_for('logout') }}" method="post">
-                <button type="submit" class="logout-button">Logout</button>
-            </form>
-        </footer>
+        
     </div>
     <script>
         function toggleSidebar() {
@@ -315,4 +310,10 @@
         }
     </script>
 </body>
+<footer>
+            <p>&copy; 2024 Our Pharmacy</p>
+            <form action="{{ url_for('logout') }}" method="post">
+                <button type="submit" class="logout-button">Logout</button>
+            </form>
+        </footer>
 </html>
