@@ -1258,7 +1258,7 @@ def view_transactions():
     cursor.execute("SELECT * FROM payments ORDER BY created_at DESC")
     transactions = cursor.fetchall()
     
-    return render_template('view_transactions.html', transactions=transactions)
+    return render_template('view_transactions.html', payments=payments)
 
 
 
