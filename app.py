@@ -17,7 +17,7 @@ def get_db():
     if 'db' not in g:
         g.db = mysql.connector.connect(
             host=os.getenv('DATABASE_HOST'),
-            port=int(os.getenv('DATABASE_PORT', 10017)),  # Default to 3306 if not set
+            port=int(os.getenv('DATABASE_PORT', 3306)),  # Default to 3306 if not set
             user=os.getenv('DATABASE_USER'),
             password=os.getenv('DATABASE_PASSWORD'),
             database=os.getenv('DATABASE_NAME')
