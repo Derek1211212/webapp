@@ -5,19 +5,22 @@ from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 from functools import wraps
 from flask import jsonify
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1f2g3h4i5j6k7l8m9n0o1p2q3r4s5t6u7v8w9x0y1z2' 
+app.secret_key = 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1f2g3h4i5j6k7l8m9n0o1p2q3r4s5t6u7v8w9x0y1z2'
 
 def get_db():
     if 'db' not in g:
         g.db = mysql.connector.connect(
-            host='108.181.197.186',
-            port=10017,
-            user="admin",
-            password="SfSsSIft",
-            database="new_schema"
+            host=os.getenv('DATABASE_HOST'),
+            port=int(os.getenv('DATABASE_PORT', 10017)),  # Default to 3306 if not set
+            user=os.getenv('DATABASE_USER'),
+            password=os.getenv('DATABASE_PASSWORD'),
+            database=os.getenv('DATABASE_NAME')
         )
     return g.db
 
@@ -1065,8 +1068,9 @@ def profit_report():
     return render_template('profit_report.html', profits=profits, start_date=start_date, end_date=end_date, grand_total_profit=grand_total_profit)
 
 
-@app.route('/forgot-password', methods=['GET'])
 
+@app.route('/forgot-password', methods=['GET'])
+@login_required
 def forgot_password():
     db = get_db()
     cursor = db.cursor()
