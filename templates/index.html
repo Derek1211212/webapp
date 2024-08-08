@@ -116,7 +116,7 @@
             text-align: center;
             position: fixed;
             top: 0;
-            left: 0;
+            margin-left: 50px;
             width: 100%;
             z-index: 0; /* Ensure it's above the content */
             box-sizing: border-box;
@@ -270,7 +270,7 @@
 <body>
     <header>
         <button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
-        <h1>DATA PULZE PHARMACY</h1>
+        <h1>{{ full_company_name }}</h1>
         <nav>
             <ul>
                 <li><a href="{{ url_for('view_products') }}">View Products</a></li>
@@ -286,7 +286,7 @@
     <div class="sidebar">
         <button class="close-btn" onclick="toggleSidebar()">×</button>
         <img src="{{ url_for('static', filename='images/pharmacy.png') }}" alt="Pharmacy Logo" class="logo">
-        <div class="menu-title">DATA PULZE PHARMACY</div>
+        <div class="menu-title">{{ full_company_name }}</div>
         <ul>
             <li>
                 <img src="{{ url_for('static', filename='icons/dashboard.png') }}" alt="Dashboard">
