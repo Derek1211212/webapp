@@ -116,15 +116,15 @@
             text-align: center;
             position: fixed;
             top: 0;
-            margin-left: 14%;
+            margin-left: 0%;
             margin-right: 0%;
-            width: 86%;
+            width: 100%;
             z-index: 0; /* Ensure it's above the content */
             box-sizing: border-box;
         }
 
         header h1 {
-            margin: 0;
+            margin: 0%;
             font-size: 2rem;
             font-weight: 600;
         }
@@ -155,7 +155,7 @@
         }
 
         nav ul li {
-            display: inline;
+            display: flex;
         }
 
         nav ul li a {
@@ -170,13 +170,13 @@
 
         .main-image {
             width: 50%;
-            max-width: 50%;
+            max-width: 80%;
             height: 50%;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin-left: 30%;
             margin-right: 20%;
-            margin-top: 10%;
+            margin-top: 6%;
             margin-bottom: 25%;
             display: block;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -199,9 +199,9 @@
             width: 100%;
             box-sizing: border-box;
             box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
-            margin-left: 10%;
+            margin-left: 0%;
             margin-right: 0%;
-            width: 90%;
+            width: 100%;
         }
 
         footer p {
@@ -271,6 +271,7 @@
                 width: 100%;
             }
         }
+
     </style>
 </head>
 <body>
@@ -282,7 +283,6 @@
                 <li><a href="{{ url_for('view_products') }}">View Products</a></li>
                 <li><a href="{{ url_for('add_product') }}">Add Product</a></li>
                 <li><a href="{{ url_for('report') }}">Inventory Reorder Level</a></li>
-                <li><a href="{{ url_for('expiring_products') }}">Expiring Within 30 Days</a></li>
                 <li><a href="{{ url_for('sales_report') }}">Sales Report</a></li>
                 <li><a href="{{ url_for('profit_report') }}">Profit Report</a></li>
                 <li><a href="{{ url_for('view_transactions') }}">Online Payment History</a></li>
@@ -326,9 +326,7 @@
         </ul>
     </div>
     <div class="content">
-        <main>
-            <img src="{{ url_for('static', filename='images/ff.jpg') }}" alt="Pharmacy Image" class="main-image">
-        </main>
+        <img src="{{ url_for('static', filename='images/ff.jpg') }}" alt="Pharmacy Image" class="main-image">
     </div>
     <footer>
         <p>&copy; 2024 Our Pharmacy</p>
