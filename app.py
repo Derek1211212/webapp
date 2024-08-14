@@ -6,7 +6,14 @@ from werkzeug.security import generate_password_hash
 from functools import wraps
 from flask import jsonify
 from dotenv import load_dotenv
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.utils import formataddr
+from datetime import datetime, timedelta
 import os
+import requests
+
 
 load_dotenv()
 
@@ -17,7 +24,7 @@ def get_db():
     if 'db' not in g:
         g.db = mysql.connector.connect(
             host=os.getenv('DATABASE_HOST'),
-            port=int(os.getenv('DATABASE_PORT', 10017)),  # Default to 3306 if not set
+            port=int(os.getenv('DATABASE_PORT', 19186)),  # Default to 3306 if not set
             user=os.getenv('DATABASE_USER'),
             password=os.getenv('DATABASE_PASSWORD'),
             database=os.getenv('DATABASE_NAME')
@@ -47,22 +54,143 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        company_id = request.form['company_id']  # Added company ID field
-        user = verify_user(username, password, company_id)
-        if user:
-            session['user_id'] = user[0]  # Store user ID
-            session['company_id'] = company_id  # Store company ID
-            return redirect(url_for('home'))
+        company_id = request.form['company_id']  # Capture company ID from form
+
+        db = get_db()
+        cursor = db.cursor()
+
+        # Check the company's subscription status and due date
+        cursor.execute("""
+            SELECT SubscriptionStatus, DueDate 
+            FROM company 
+            WHERE CompanyID = %s
+        """, (company_id,))
+        company = cursor.fetchone()
+
+        if company:
+            subscription_status, due_date = company
+            current_date = datetime.now().date()
+
+            # Check if the DueDate has passed
+            if due_date <= current_date:
+                # Update the subscription status to 'Suspended'
+                cursor.execute("""
+                    UPDATE company 
+                    SET SubscriptionStatus = 'Suspended' 
+                    WHERE CompanyID = %s
+                """, (company_id,))
+                db.commit()
+                flash('Subscription expired. Please renew your subscription.')
+                return redirect(url_for('login'))
+
+            # Check if the subscription status is valid for login
+            if subscription_status not in ['Free', 'Paid']:
+                flash('Your subscription is suspended. Please contact support.')
+                return redirect(url_for('login'))
+
+            # Verify user credentials
+            user = verify_user(username, password, company_id)
+            if user:
+                session['user_id'] = user[0]  # Store user ID
+                session['company_id'] = company_id  # Store company ID
+                return redirect(url_for('home'))
+            else:
+                flash('Invalid username, password, or company ID')
         else:
-            flash('Invalid username, password, or company ID')
+            flash('Invalid company ID')
+
     if 'user_id' in session:
         return redirect(url_for('home'))
+    
     return render_template('login.html')
+
+
+
+@app.route('/renew', methods=['GET', 'POST'])
+def renew():
+    if request.method == 'POST':
+        company_id = request.form['company_id']
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+
+        db = get_db()
+        cursor = db.cursor()
+
+        # Verify user credentials
+        cursor.execute("""
+            SELECT Password 
+            FROM tblusers 
+            WHERE CompanyID = %s AND Username = %s
+        """, (company_id, username))
+        user = cursor.fetchone()
+
+        if user and user[0] == password:
+            return jsonify({'status': 'success'})
+        else:
+            return jsonify({'status': 'failure', 'message': 'Invalid credentials. Please check your username, password, and Company ID.'})
+
+    return render_template('renew.html')
+
+
+
+@app.route('/renew_payment_confirmation', methods=['POST'])
+def renew_payment_confirmation():
+    data = request.json
+    reference = data.get('reference')
+    company_id = data.get('company_id')
+    email = data.get('email')
+    username = data.get('username')
+
+    db = get_db()
+    cursor = db.cursor()
+
+    # Fetch old due date
+    cursor.execute("""
+        SELECT DueDate 
+        FROM company 
+        WHERE CompanyID = %s
+    """, (company_id,))
+    old_due_date = cursor.fetchone()[0]
+
+    # Calculate new due date
+    if old_due_date and old_due_date > datetime.now().date():
+        days_left = (old_due_date - datetime.now().date()).days
+        new_due_date = datetime.now().date() + timedelta(days=days_left + 30)
+    else:
+        new_due_date = datetime.now().date() + timedelta(days=30)
+
+    # Update subscription status and due date
+    cursor.execute("""
+        UPDATE company 
+        SET SubscriptionStatus = 'Paid', DueDate = %s 
+        WHERE CompanyID = %s
+    """, (new_due_date, company_id))
+    
+    # Store payment details in subscriptionpayment table
+    cursor.execute("""
+        INSERT INTO subscriptionpayment (reference, email, username, companyID, time_of_payment)
+        VALUES (%s, %s, %s, %s, %s)
+    """, (reference, email, username, company_id, datetime.now()))
+    
+    db.commit()
+
+    return jsonify({'status': 'success'})
+
+
+
+@app.route('/success')
+def success():
+    return render_template('success.html')
+
+
+
 
 
 @app.route('/home')
@@ -144,15 +272,15 @@ def add_product():
         data = {
             'product_name': request.form['product_name'],
             'manufacturer': request.form['manufacturer'],
-            'dosage': request.form['dosage'],
+           
             'price': request.form['price'],
             'selling_price': request.form['selling_price'],
             'stock_quantity': request.form['stock_quantity'],
-            'expiry_date': request.form['expiry_date'],
+           
             'supplier_id': request.form['supplier_id'],
             'usage': request.form['usage'],
             'description': request.form['description'],
-            'mfg_date': request.form['mfg_date'],
+           
             'drug_type': request.form['drug_type'],
             'reorder_on': request.form['reorder_on']
         }
@@ -163,8 +291,8 @@ def add_product():
             cursor = db.cursor()
             cursor.execute("""
                 INSERT INTO products 
-                (ProductName, Manufacturer, Dosage, Price, SellingPrice, StockQuantity, ExpiryDate, SupplierID, `Usage`, Description, MfgDate, DrugType, ReorderOn, CompanyID) 
-                VALUES (%(product_name)s, %(manufacturer)s, %(dosage)s, %(price)s, %(selling_price)s, %(stock_quantity)s, %(expiry_date)s, %(supplier_id)s, %(usage)s, %(description)s, %(mfg_date)s, %(drug_type)s, %(reorder_on)s, %(company_id)s)
+                (ProductName, Manufacturer, Price, SellingPrice, StockQuantity, SupplierID, `Usage`, Description, DrugType, ReorderOn, CompanyID) 
+                VALUES (%(product_name)s, %(manufacturer)s, %(price)s, %(selling_price)s, %(stock_quantity)s, %(supplier_id)s, %(usage)s, %(description)s, %(drug_type)s, %(reorder_on)s, %(company_id)s)
             """, {**data, 'company_id': company_id})
             db.commit()
             print("Product added successfully")  # Debugging line
@@ -367,9 +495,9 @@ def add_order():
 
             for i in range(len(products)):
                 cursor.execute("""
-                    INSERT INTO orderdetails (OrderID, ProductName, Quantity, Tax, Discount, PaymentMode) 
-                    VALUES (%s, %s, %s, %s, %s, %s)
-                """, (order_id, products[i], quantities[i], taxes[i], discounts[i], payment_modes[i]))
+                    INSERT INTO orderdetails (OrderID, ProductName, Quantity, Tax, Discount, PaymentMode, CompanyID) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """, (order_id, products[i], quantities[i], taxes[i], discounts[i], payment_modes[i], company_id))
 
                 # Update the StockQuantity in the products table
                 cursor.execute("""
@@ -380,7 +508,7 @@ def add_order():
 
             db.commit()
             return redirect(url_for('order_details', order_id=order_id))
-        except Error as err:
+        except Exception as err:
             db.rollback()
             print(f"Error: {err}")
             # Handle the error appropriately (e.g., show an error message to the user)
@@ -391,6 +519,7 @@ def add_order():
     products = cursor.fetchall()
     
     return render_template('sales_point.html', products=products)
+
 
 @app.route('/order/<int:order_id>')
 @login_required
@@ -425,15 +554,15 @@ def edit_product(product_id):
         data = {
             'product_name': request.form['product_name'],
             'manufacturer': request.form['manufacturer'],
-            'dosage': request.form['dosage'],
+           
             'price': request.form['price'],
             'selling_price': request.form['SellingPrice'],
             'stock_quantity': request.form['stock_quantity'],
-            'expiry_date': request.form['expiry_date'],
+            
             'supplier_id': request.form['supplier_id'],
             'usage': request.form['usage'],
             'description': request.form['description'],
-            'mfg_date': request.form['mfg_date'],
+         
             'drug_type': request.form['drug_type'],
             'reorder_on': request.form['reorder_on'],
             'product_id': product_id
@@ -442,10 +571,10 @@ def edit_product(product_id):
         try:
             sql_query = """
                 UPDATE products 
-                SET ProductName = %(product_name)s, Manufacturer = %(manufacturer)s, Dosage = %(dosage)s, 
+                SET ProductName = %(product_name)s, Manufacturer = %(manufacturer)s, 
                     Price = %(price)s, SellingPrice = %(selling_price)s, StockQuantity = %(stock_quantity)s, 
-                    ExpiryDate = %(expiry_date)s, SupplierID = %(supplier_id)s, `Usage` = %(usage)s, 
-                    Description = %(description)s, MfgDate = %(mfg_date)s, DrugType = %(drug_type)s, 
+                    SupplierID = %(supplier_id)s, `Usage` = %(usage)s, 
+                    Description = %(description)s, DrugType = %(drug_type)s, 
                     ReorderOn = %(reorder_on)s 
                 WHERE ProductID = %(product_id)s AND CompanyID = %(company_id)s
             """
@@ -1109,7 +1238,7 @@ def report():
                 END AS ReorderStatus
             FROM
                 products p
-                LEFT JOIN orderdetails od ON p.ProductID = od.ProductID
+                LEFT JOIN orderdetails od ON p.ProductID = od.ProductName
                 LEFT JOIN inventorytransactions it ON p.ProductID = it.ProductID
             WHERE
                 p.CompanyID = %s
@@ -1275,52 +1404,6 @@ def profit_report():
     return render_template('profit_report.html', profits=profits, start_date=start_date, end_date=end_date, grand_total_profit=grand_total_profit)
 
 
-@app.route('/forgot-password', methods=['GET'])
-@login_required
-def forgot_password():
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute("SELECT DISTINCT SecurityQuestion FROM tblusers WHERE CompanyID = %s", (session['company_id'],))
-    questions = cursor.fetchall()
-    questions = [q[0] for q in questions]
-    db.close()
-    
-    return render_template('forgot_password.html', questions=questions)
-
-
-@app.route('/reset-password', methods=['POST'])
-@login_required
-def reset_password():
-    username = request.form['username']
-    security_question = request.form['security_question']
-    security_answer = request.form['security_answer']
-    new_password = request.form['new_password']
-    confirm_new_password = request.form['confirm_new_password']
-
-    if new_password != confirm_new_password:
-        flash('Passwords do not match.', 'error')
-        return redirect(url_for('forgot_password'))
-
-    db = get_db()
-    cursor = db.cursor()
-
-    # Check if the username and security answer match
-    cursor.execute("SELECT SecurityQuestion, SecurityAnswer FROM tblusers WHERE Username = %s AND CompanyID = %s", 
-                   (username, session['company_id']))
-    user = cursor.fetchone()
-
-    if user and user[0] == security_question and user[1] == security_answer:
-        cursor.execute("UPDATE tblusers SET Password = %s WHERE Username = %s AND CompanyID = %s", 
-                       (new_password, username, session['company_id']))
-        db.commit()
-        db.close()
-        flash('Your password has been reset successfully. You can now log in.', 'success')
-        return redirect(url_for('login'))
-    else:
-        db.close()
-        flash('Username, security question, or answer is incorrect.', 'error')
-        return redirect(url_for('forgot_password'))
-
 
 @app.route('/supplier_report')
 @login_required
@@ -1460,24 +1543,24 @@ def invoice(order_id):
 
     return render_template('invoice.html', order_summary=order_summary, invoice_details=details, total_payable=total_payable)
 
-
 @app.route('/payment_confirmation', methods=['POST'])
 def payment_confirmation():
     data = request.get_json()
     reference = data.get('reference')
     email = data.get('email')
     amount = data.get('amount')
+    order_id = data.get('order_id')  # Capture the OrderID from the form
 
     db = get_db()
     cursor = db.cursor()
 
     try:
-        # Save payment details to database
+        # Save payment details to the database, including OrderID
         query = """
-            INSERT INTO payments (reference, email, amount, status, CompanyID)
-            VALUES (%s, %s, %s, 'completed', %s)
+            INSERT INTO payments (reference, email, amount, status, CompanyID, OrderID)
+            VALUES (%s, %s, %s, 'completed', %s, %s)
         """
-        cursor.execute(query, (reference, email, amount, session['company_id']))
+        cursor.execute(query, (reference, email, amount, session['company_id'], order_id))
         db.commit()
         return jsonify({'status': 'success', 'message': 'Payment details recorded.'}), 200
     except Exception as e:
@@ -1494,5 +1577,196 @@ def view_transactions():
     return render_template('view_transactions.html', payments=payments)
 
 
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        company_name = request.form['companyName']
+        email = request.form['email']
+        username = request.form['username']
+        password = request.form['password']
+        plan = request.form['plan']
+        security_question = request.form['securityQuestion']
+        security_answer = request.form['securityAnswer']
+
+        if plan == 'paid':
+            session['signup_data'] = {
+                'company_name': company_name,
+                'email': email,
+                'username': username,
+                'password': password,
+                'security_question': security_question,
+                'security_answer': security_answer
+            }
+            return redirect(url_for('pay'))
+
+        # Handle free plan signup directly
+        company_id = save_to_database(company_name, email, 'Free')
+        save_user(username, password, company_id, security_question, security_answer)
+        return redirect(url_for('signup_success', company_id=company_id))
+
+    return render_template('signup.html')
+
+@app.route('/pay', methods=['GET'])
+def pay():
+    signup_data = session.get('signup_data')
+    if not signup_data:
+        return redirect(url_for('signup'))
+    
+    # Pass data to your Paystack payment page
+    return render_template('pay.html', data=signup_data)
+
+
+
+
+@app.route('/confirm_payment', methods=['POST'])
+def confirm_payment():
+    data = request.json
+    reference = data.get('reference')
+
+    # Verify the payment with Paystack
+    headers = {
+        'Authorization': f'Bearer sk_test_9841b94baa622b81bc86987313d32a4eed88a9bf',  # Replace with your secret key
+    }
+    response = requests.get(f'https://api.paystack.co/transaction/verify/{reference}', headers=headers)
+    result = response.json()
+
+    if result['status'] and result['data']['status'] == 'success':
+        signup_data = session.get('signup_data')
+        company_id = save_to_database(signup_data['company_name'], signup_data['email'], 'Paid')
+        
+        # Ensure `signup_data` contains the additional fields
+        security_question = signup_data.get('security_question')
+        security_answer = signup_data.get('security_answer')
+        
+        # Pass all required arguments to `save_user`
+        save_user(signup_data['username'], signup_data['password'], company_id, security_question, security_answer)
+        
+        session.pop('signup_data', None)
+        return jsonify({'redirect': url_for('signup_success', company_id=company_id)})
+    
+    return jsonify({'message': 'Payment verification failed'}), 400
+
+
+
+
+@app.route('/signup-success/<company_id>')
+def signup_success(company_id):
+    return render_template('signup_success.html', company_id=company_id)
+
+def save_to_database(company_name, email, subscription_status):
+    connection = get_db()  # Adjust this function as per your database connection
+    with connection.cursor() as cursor:
+        # Save to 'company' table
+        cursor.execute(
+            "INSERT INTO company (CompanyName, EmailAddress, SubscriptionStatus, DueDate) VALUES (%s, %s, %s, %s)",
+            (company_name, email, subscription_status, datetime.now() + timedelta(days=30))
+        )
+        connection.commit()
+        company_id = cursor.lastrowid
+    return company_id
+
+def save_user(username, password, company_id, security_question, security_answer):
+    connection = get_db()
+    with connection.cursor() as cursor:
+        # Save to 'tblusers' table
+        cursor.execute(
+            "INSERT INTO tblusers (Username, Password, CompanyID, SecurityQuestion, SecurityAnswer) VALUES (%s, %s, %s, %s, %s)",
+            (username, password, company_id, security_question, security_answer)
+        )
+        connection.commit()
+
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        username = request.form['username']
+        company_id = request.form['companyID']
+        connection = get_db()
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT SecurityQuestion FROM tblusers WHERE Username = %s AND CompanyID = %s",
+            (username, company_id)
+        )
+        result = cursor.fetchone()
+        if result:
+            security_question = result[0]
+            return render_template('reset_password.html', username=username, company_id=company_id, security_question=security_question)
+        else:
+            flash('Username or Company ID is incorrect.', 'error')
+    return render_template('forgot_password.html')
+
+
+
+@app.route('/reset-password', methods=['POST'])
+def reset_password():
+    username = request.form['username']
+    company_id = request.form['companyID']
+    security_question = request.form['securityQuestion']
+    security_answer = request.form['securityAnswer']
+    new_password = request.form['newPassword']
+    confirm_password = request.form['confirmNewPassword']
+
+    connection = get_db()
+    cursor = connection.cursor()
+    
+    # Check if security answer is correct
+    cursor.execute(
+        "SELECT SecurityAnswer FROM tblusers WHERE Username = %s AND CompanyID = %s AND SecurityQuestion = %s",
+        (username, company_id, security_question)
+    )
+    result = cursor.fetchone()
+
+    if result and result[0] == security_answer:
+        if new_password == confirm_password:
+            # No hashing here, saving the new password directly
+            cursor.execute(
+                "UPDATE tblusers SET Password = %s WHERE Username = %s AND CompanyID = %s",
+                (new_password, username, company_id)
+            )
+            connection.commit()
+            flash('Password has been updated successfully.', 'success')
+            return redirect(url_for('login'))
+        else:
+            flash('Passwords do not match.', 'error')
+    else:
+        flash('Security answer is incorrect.', 'error')
+    
+    return render_template('reset_password.html', username=username, company_id=company_id, security_question=security_question)
+
+@app.route('/subscription_history')
+def subscription_history():
+    # Get the company ID from the session
+    company_id = session.get('company_id')
+    if not company_id:
+        flash('You must be logged in to view this page.')
+        return redirect(url_for('login'))
+
+    db = get_db()
+    cursor = db.cursor()
+
+    # Fetch the due date from the company table
+    cursor.execute("""
+        SELECT DueDate 
+        FROM company 
+        WHERE CompanyID = %s
+    """, (company_id,))
+    due_date = cursor.fetchone()[0]
+
+    # Fetch the subscription payment history
+    cursor.execute("""
+        SELECT id, reference, email, username, time_of_payment
+        FROM subscriptionpayment
+        WHERE companyID = %s
+    """, (company_id,))
+    payments = cursor.fetchall()
+
+    return render_template('subscription_history.html', payments=payments, due_date=due_date)
+
+
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
+
+
