@@ -87,21 +87,16 @@
     <form method="POST">
         <div class="form-group">
             <label for="product_name">Product Name:</label>
-            <input type="text" id="product_name" name="product_name" required>
+            <input type="text" id="product_name" name="product_name" required required autocomplete="off">
         </div>
 
         <div class="form-group">
             <label for="manufacturer">Manufacturer:</label>
-            <input type="text" id="manufacturer" name="manufacturer" required>
+            <input type="text" id="manufacturer" name="manufacturer" required required autocomplete="off">
         </div>
 
         <div class="form-group">
-            <label for="dosage">Dosage:</label>
-            <input type="text" id="dosage" name="dosage" required>
-        </div>
-
-        <div class="form-group">
-            <label for="price">Price:</label>
+            <label for="price">Purchase Price:</label>
             <input type="number" step="0.01" id="price" name="price" required>
         </div>
 
@@ -113,11 +108,6 @@
         <div class="form-group">
             <label for="stock_quantity">Stock Quantity:</label>
             <input type="number" id="stock_quantity" name="stock_quantity" required>
-        </div>
-
-        <div class="form-group">
-            <label for="expiry_date">Expiry Date:</label>
-            <input type="date" id="expiry_date" name="expiry_date" required>
         </div>
 
         <div class="form-group">
@@ -133,11 +123,6 @@
         <div class="form-group">
             <label for="description">Description:</label>
             <input type="text" id="description" name="description" required>
-        </div>
-
-        <div class="form-group">
-            <label for="mfg_date">Mfg Date:</label>
-            <input type="date" id="mfg_date" name="mfg_date" required>
         </div>
 
         <div class="form-group">

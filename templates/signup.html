@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        /* General styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        /* Container for the sign-up form */
+        .signup-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 800px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .signup-container h1 {
+            margin: 0 0 20px;
+            color: #00796b; /* Dark teal */
+            font-size: 24px;
+        }
+
+        /* Grid layout for form fields */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-grid label {
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .form-grid input,
+        .form-grid select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #333;
+            box-sizing: border-box;
+        }
+
+        /* Make sure fields span full width on smaller screens */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .signup-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #00796b; /* Dark teal */
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .signup-container button:hover {
+            background-color: #004d40; /* Darker teal */
+        }
+
+        .signup-container a {
+            display: block;
+            color: #00796b;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .signup-container a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <h1>Sign Up</h1>
+        <form action="{{ url_for('signup') }}" method="POST">
+            <div class="form-grid">
+                <div>
+                    <label for="companyName">Company Name:</label>
+                    <input type="text" id="companyName" name="companyName" required autocomplete="off">
+                </div>
+                <div>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required autocomplete="off">
+                </div>
+                <div>
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required autocomplete="off">
+                </div>
+                <div>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required autocomplete="off">
+                </div>
+                <div>
+                    <label for="securityQuestion">Security Question:</label>
+                    <input type="text" id="securityQuestion" name="securityQuestion" required autocomplete="off">
+                </div>
+                <div>
+                    <label for="securityAnswer">Security Answer:</label>
+                    <input type="text" id="securityAnswer" name="securityAnswer" required autocomplete="off">
+                </div>
+                <div class="full-width">
+                    <label for="plan">Subscription Plan:</label>
+                    <select id="plan" name="plan" required>
+                        <option value="free">Free Trial</option>
+                        <option value="paid">Paid</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit">Sign Up</button>
+        </form>
+        <a href="{{ url_for('login') }}">Already have an account? Log in</a>
+    </div>
+</body>
+</html>

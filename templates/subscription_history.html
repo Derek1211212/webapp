@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription History</title>
+    <style>
+        /* Add any specific styling here */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #00796b; /* Dark teal */
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Subscription Payment History</h1>
+    </header>
+    <main>
+        <h2>Due Date: {{ due_date.strftime('%Y-%m-%d') }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Reference</th>
+                    <th>Email</th>
+                    <th>Username</th>
+                    <th>Time of Payment</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td>{{ payment[0] }}</td>
+                    <td>{{ payment[1] }}</td>
+                    <td>{{ payment[2] }}</td>
+                    <td>{{ payment[3] }}</td>
+                    <td>{{ payment[4].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center;">No payments found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+    <footer>
+        <p>&copy; 2024 Our Pharmacy</p>
+    </footer>
+</body>
+</html>

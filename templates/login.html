@@ -5,99 +5,131 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <style>
-        /* General styling */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+        /* Basic Reset */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             height: 100vh;
         }
 
-        /* Container for the login form */
         .login-container {
-            background-color: #ffffff;
-            border-radius: 10px;
+            background: #fff;
+            border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            width: 300px;
-            max-width: 100%;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
             text-align: center;
         }
 
-        .login-container h2 {
-            margin: 0 0 20px;
-            color: #333;
-            font-size: 24px;
+        form {
+            display: flex;
+            flex-direction: column;
         }
 
-        .login-container label {
-            display: block;
+        label {
             margin-bottom: 5px;
-            color: #555;
             font-weight: bold;
+            color: #333;
         }
 
-        .login-container input[type="text"],
-        .login-container input[type="password"] {
-            width: calc(100% - 20px);
+        input {
+            margin-bottom: 15px;
             padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-bottom: 20px;
+            border-radius: 4px;
             font-size: 16px;
-            color: #333;
         }
 
-        .login-container button {
-            width: 100%;
+        button {
             padding: 10px;
-            background-color: #00796b; /* Dark teal */
             border: none;
-            border-radius: 5px;
-            color: white;
+            border-radius: 4px;
             font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            margin-bottom: 10px;
         }
 
-        .login-container button:hover {
-            background-color: #004d40; /* Darker teal */
+        button:hover {
+            background-color: #0056b3;
         }
 
-        .login-container p {
-            margin: 10px 0 0;
+        .signup-button {
+            background-color: #28a745;
         }
 
-        .login-container a {
-            color: #00796b; /* Dark teal */
+        .signup-button:hover {
+            background-color: #218838;
+        }
+
+        .flashes {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .flashes li {
+            background: #d9534f;
+            color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+
+        a {
+            color: #007bff;
             text-decoration: none;
-            font-weight: bold;
         }
 
-        .login-container a:hover {
+        a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flashes">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
         <h2>Login</h2>
-        <form id="loginForm" action="/" method="post">
+        <form action="{{ url_for('login') }}" method="post">
             <label for="company_id">Company ID:</label>
-            <input type="text" id="company_id" name="company_id" required>
+            <input type="text" id="company_id" name="company_id" required autocomplete="off">
             
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
+            <input type="text" id="username" name="username" required autocomplete="off">
             
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="password" required autocomplete="off">
             
             <button type="submit">Login</button>
             <p><a href="/forgot-password">Forgot Password?</a></p>
+            <button type="button" class="signup-button" onclick="window.location.href='/signup';">Sign Up</button>
+            <button type="button" class="signup-button" onclick="window.location.href='/renew';">Renew Subscription</button>
         </form>
     </div>
 </body>
