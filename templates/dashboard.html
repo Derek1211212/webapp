@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <style>
-       body {
+body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
@@ -55,6 +55,8 @@ button {
     border-radius: 5px;
     cursor: pointer;
     margin: 10px; /* Add margin to separate from other elements */
+    display: inline-block; /* Make button size adapt to content */
+    text-align: center;
 }
 
 button:hover {
@@ -192,8 +194,8 @@ h2 {
     }
 
     button {
-        width: 100%; /* Full width on mobile */
-        max-width: 370px; /* Limit button width on mobile */
+        width: 90%; /* Full width on mobile */
+        max-width: 350px; /* Limit button width on mobile */
     }
 
     .cards-container {
@@ -214,6 +216,8 @@ h2 {
         height: 80%;
     }
 }
+
+
 
 
     </style>
