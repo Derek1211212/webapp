@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Service</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .service-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        input {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="service-container">
+        <h2>Add Service</h2>
+        <form id="service-form" method="POST" action="{{ url_for('add_service') }}">
+            <label for="service-name">Service Name:</label>
+            <input type="text" id="service-name" name="service_name" required>
+
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" required>
+
+            <label for="patient-name">Patient Name:</label>
+            <input type="text" id="patient-name" name="patient_name" required>
+
+            <label for="phone-number">Phone Number:</label>
+            <input type="text" id="phone-number" name="phone_number" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <button type="button" id="paystack-btn">Pay with Paystack</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('paystack-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            let handler = PaystackPop.setup({
+                key: 'pk_test_687e15c55aa4b8225311e136ff9c267baf07ec4b', // Replace with your Paystack public key
+                email: document.getElementById('email').value,
+                amount: document.getElementById('amount').value * 100, // Paystack expects the amount in kobo
+                currency: 'GHS',
+                callback: function(response) {
+                    // Send the response to the server to confirm payment
+                    fetch("{{ url_for('confirm_service_payment') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            reference: response.reference,
+                            service_name: document.getElementById('service-name').value,
+                            amount: document.getElementById('amount').value,
+                            patient_name: document.getElementById('patient-name').value,
+                            phone_number: document.getElementById('phone-number').value,
+                            email: document.getElementById('email').value
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            alert(data.message);
+                            window.location.href = "{{ url_for('service_success') }}";
+                        } else {
+                            alert('Payment confirmation failed. Please try again.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                },
+                onClose: function() {
+                    alert('Payment window closed.');
+                }
+            });
+            handler.openIframe();
+        });
+    </script>
+</body>
+</html>
+
+

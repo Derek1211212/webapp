@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Sales Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Product Sales Chart</h1>
+    
+    <label for="product">Select Product:</label>
+    <select id="product">
+        {% for product in products %}
+            <option value="{{ product.ProductName }}">{{ product.ProductName }}</option>
+        {% endfor %}
+    </select>
+    
+    <canvas id="salesChart" width="400" height="200"></canvas>
+    
+    <script>
+        document.getElementById('product').addEventListener('change', function() {
+            fetch(`/api/chart-data?product=${this.value}&start_date={{ start_date }}&end_date={{ end_date }}`)
+                .then(response => response.json())
+                .then(data => {
+                    const ctx = document.getElementById('salesChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: 'Quantity Sold',
+                                data: data.quantities,
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                });
+        });
+        
+        // Trigger a change event to load initial data
+        document.getElementById('product').dispatchEvent(new Event('change'));
+    </script>
+</body>
+</html>

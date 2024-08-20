@@ -136,6 +136,38 @@
             margin-bottom: 10px;
             font-weight: 500;
         }
+
+ #chart-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #chart-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            position: relative;
+            width: 80%;
+            height: 80%;
+        }
+
+        #close-chart {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+
     </style>
 </head>
 <body>
@@ -187,6 +219,56 @@
             <div class="description">Expiring Soon Products</div>
         </div>
     </div>
+
+
+<button id="show-chart">Show Quantity Sold Distribution Chart</button>
+
+    <div id="chart-popup">
+        <div id="chart-content">
+            <span id="close-chart">&times;</span>
+            <canvas id="distribution-chart"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.getElementById('show-chart').onclick = function() {
+            document.getElementById('chart-popup').style.display = 'flex';
+            fetch('/chart-data?' + new URLSearchParams({
+                start_date: new URLSearchParams(window.location.search).get('start_date'),
+                end_date: new URLSearchParams(window.location.search).get('end_date')
+            }))
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('distribution-chart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Total Quantity Sold',
+                            data: data.values,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            });
+        };
+
+        document.getElementById('close-chart').onclick = function() {
+            document.getElementById('chart-popup').style.display = 'none';
+        };
+    </script>
+
 </body>
 </html>
 

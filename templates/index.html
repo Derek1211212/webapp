@@ -102,33 +102,33 @@
 
         /* Header and main content */
         .content {
-            margin-left: 0;
+            margin-left: 15%;
             padding: 20px;
             flex: 1;
             display: flex;
             flex-direction: column;
         }
 
-        header {
-            background-color: #00796b; /* Dark teal */
-            color: white;
-            padding: 10px 30px;
-            text-align: center;
-            position: fixed;
-            top: 0;
-            margin-left: 0%;
-            margin-right: 0%;
-            width: 100%;
-            z-index: 0; /* Ensure it's above the content */
-            box-sizing: border-box;
-        }
+       header {
+    background-color: #00796b; /* Dark teal */
+    color: white;
+    padding: 10px 30px;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1; /* Ensure it's above the content */
+    box-sizing: border-box;
+    height: 60px; /* Set a fixed height for the header */
+}
 
-        header h1 {
-            margin: 0%;
-            font-size: 2rem;
-            font-weight: 600;
-        }
 
+       header h1 {
+    margin: 0; /* Remove margin from header text */
+    font-size: 2rem;
+    font-weight: 600;
+}
         header .toggle-sidebar {
             display: none;
             background-color: #00796b; /* Dark teal */
@@ -143,50 +143,44 @@
             border-radius: 5px;
             z-index: 3; /* Ensure it's above the content */
         }
+/* Main menu squares */
+.main-menu {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    gap: 10px;
+    padding: 20px;
+    margin-top: 25px; /* Adjust to ensure space below the header */
+    grid-auto-rows: minmax(150px, auto); /* Ensure items can expand */
+}
 
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 10px 0 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-        }
+.menu-item {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    text-align: center;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
 
-        nav ul li {
-            display: flex;
-        }
+.menu-item img {
+    width: 50px;
+    height: 50px;
+}
 
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
+.menu-item span {
+    display: block;
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #00796b; /* Dark teal */
+}
 
-        nav ul li a:hover {
-            text-decoration: underline;
-        }
+.menu-item:hover {
+    background-color: #e0f2f1; /* Light green */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
 
-        .main-image {
-            width: 50%;
-            max-width: 80%;
-            height: 50%;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-left: 30%;
-            margin-right: 20%;
-            margin-top: 6%;
-            margin-bottom: 25%;
-            display: block;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            align-self: center;
-        }
-
-        .main-image:hover {
-            transform: scale(1.02);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
 
         footer {
             background-color: #00796b; /* Dark teal */
@@ -260,6 +254,10 @@
                 width: 100%;
             }
 
+            .main-menu {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+
             .main-image {
                 width: 100%;
                 margin: 10px auto;
@@ -271,24 +269,12 @@
                 width: 100%;
             }
         }
-
     </style>
 </head>
 <body>
     <header>
         <button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
         <h1>{{ full_company_name }}</h1>
-        <nav>
-            <ul>
-                <li><a href="{{ url_for('view_products') }}">View Products</a></li>
-                <li><a href="{{ url_for('add_product') }}">Add Product</a></li>
-                <li><a href="{{ url_for('report') }}">Inventory Reorder Level</a></li>
-                <li><a href="{{ url_for('sales_report') }}">Sales Report</a></li>
-                <li><a href="{{ url_for('profit_report') }}">Profit Report</a></li>
-                <li><a href="{{ url_for('view_transactions') }}">Online Payment History</a></li>
-                <li><a href="{{ url_for('subscription_history') }}">Subscription History</a></li>
-            </ul>
-        </nav>
     </header>
     <div class="sidebar">
         <button class="close-btn" onclick="toggleSidebar()">×</button>
@@ -326,7 +312,38 @@
         </ul>
     </div>
     <div class="content">
-        <img src="{{ url_for('static', filename='images/ff.jpg') }}" alt="Pharmacy Image" class="main-image">
+        <div class="main-menu">
+            <div class="menu-item">
+                <img src="{{ url_for('static', filename='images/box.png') }}" alt="View Products">
+                <a href="{{ url_for('view_products') }}"><span>View Products</span></a>
+            </div>
+            <div class="menu-item">
+                <img src="{{ url_for('static', filename='images/reorder.png') }}" alt="Inventory Reorder Level">
+                <a href="{{ url_for('report') }}"><span>Inventory Reorder Level</span></a>
+            </div>
+            <div class="menu-item">
+                <img src="{{ url_for('static', filename='images/sale-report.png') }}" alt="Sales Report">
+                <a href="{{ url_for('sales_report') }}"><span>Sales Report</span></a>
+            </div>
+            <div class="menu-item">
+                <img src="{{ url_for('static', filename='images/profit-margin.png') }}" alt="Profit Report">
+                <a href="{{ url_for('profit_report') }}"><span>Profit Report</span></a>
+            </div>
+            <div class="menu-item">
+                <img src="{{ url_for('static', filename='images/credit-card (2).png') }}" alt="Online Payment History">
+                <a href="{{ url_for('view_transactions') }}"><span>Online Payment History</span></a>
+            </div>
+           <div class="menu-item">
+                <img src="{{ url_for('static', filename='images/schedule.png') }}" alt=" Subscription">
+                <a href="{{ url_for('subscription_history') }}"><span>Subscription History</span></a>
+            </div>
+            <div class="menu-item">
+                <img src="{{ url_for('static', filename='images/service.png') }}" alt=" Add Service">
+                <a href="{{ url_for('add_service') }}"><span>Add service</span></a>
+            </div>
+
+        </div>
+       
     </div>
     <footer>
         <p>&copy; 2024 Our Pharmacy</p>
