@@ -13,6 +13,8 @@ from email.utils import formataddr
 from datetime import datetime, timedelta
 import os
 import requests
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 
 load_dotenv()
@@ -457,17 +459,42 @@ def dashboard():
         """, (company_id,))
         expiring_soon_result = cursor.fetchone()
         stats['expiring_soon_products'] = expiring_soon_result['expiring_soon_count']
-    
+
+        # Fetch data for distribution chart
+        if start_date and end_date:
+            cursor.execute("""
+                SELECT p.ProductName, SUM(od.Quantity) as total_quantity
+                FROM orderdetails od
+                JOIN orders o ON od.OrderID = o.OrderID
+                JOIN products p ON od.ProductName = p.ProductID
+                WHERE o.OrderDate BETWEEN %s AND %s AND o.CompanyID = %s
+                GROUP BY p.ProductName
+            """, (start_date, end_date, company_id))
+        else:
+            cursor.execute("""
+                SELECT p.ProductName, SUM(od.Quantity) as total_quantity
+                FROM orderdetails od
+                JOIN orders o ON od.OrderID = o.OrderID
+                JOIN products p ON od.ProductName = p.ProductID
+                WHERE o.CompanyID = %s
+                GROUP BY p.ProductName
+            """, (company_id,))
+
+        distribution_data = cursor.fetchall()
+        stats['distribution_data'] = distribution_data
+
     except Error as err:
         print(f"Error: {err}")
         stats = {key: 'Error fetching data' for key in [
             'total_stock_quantity', 'total_paid', 'total_expenses', 
             'total_quantity_sold', 'total_quantity_purchased', 
             'balance_to_pay_suppliers', 'total_sales_amount', 
-            'low_stock_products', 'expiring_soon_products'
+            'low_stock_products', 'expiring_soon_products',
+            'distribution_data'
         ]}
     
     return render_template('dashboard.html', stats=stats)
+
 
 #1
 
@@ -1761,11 +1788,112 @@ def subscription_history():
 
     return render_template('subscription_history.html', payments=payments, due_date=due_date)
 
+@app.route('/add_service', methods=['GET', 'POST'])
+def add_service():
+    if request.method == 'POST':
+        service_name = request.form['service_name']
+        amount = request.form['amount']
+        patient_name = request.form['patient_name']
+        phone_number = request.form['phone_number']
+        email = request.form['email']
+
+        # Retrieve CompanyID from session
+        company_id = session.get('company_id')
+
+        # Save service details in the database with 'Pending' payment status
+        connection = get_db()
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                INSERT INTO services (ServiceName, Amount, PatientName, PhoneNumber, Email, CompanyID, PaymentStatus)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            ''', (service_name, amount, patient_name, phone_number, email, company_id, 'Pending'))
+            connection.commit()
+        connection.close()
+
+        # Redirect to Paystack payment page
+        return redirect(url_for('pay_with_paystack', service_name=service_name, amount=amount, email=email))
+
+    return render_template('add_service.html')
+
+@app.route('/pay_with_paystack')
+def pay_with_paystack():
+    service_name = request.args.get('service_name')
+    amount = request.args.get('amount')
+    email = request.args.get('email')
+    return render_template('paystack_payment.html', service_name=service_name, amount=amount, email=email)
 
 
+@app.route('/confirm_service_payment', methods=['POST'])
+def confirm_service_payment():
+    data = request.get_json()
+    reference = data['reference']
+    service_name = data['service_name']
+    amount = data['amount']
+    patient_name = data['patient_name']
+    phone_number = data['phone_number']
+    email = data['email']
+
+    # Retrieve CompanyID from session
+    company_id = session.get('company_id')
+
+    connection = get_db()
+    with connection.cursor() as cursor:
+        cursor.execute('''
+            UPDATE services
+            SET PaymentReference = %s, PaymentStatus = %s
+            WHERE ServiceName = %s AND Amount = %s AND Email = %s AND CompanyID = %s
+        ''', (reference, 'Completed', service_name, amount, email, company_id))
+        connection.commit()
+    connection.close()
+
+    return jsonify({'status': 'success', 'message': 'Payment confirmed and service added successfully!'})
+
+@app.route('/service_success')
+def service_success():
+    return 'Service added successfully with cash payment!'
 
 
+@app.route('/chart-data')
+@login_required
+def chart_data():
+    db = get_db()
+    company_id = session.get('company_id')
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
 
+    try:
+        cursor = db.cursor(dictionary=True)
+
+        if start_date and end_date:
+            cursor.execute("""
+                SELECT p.ProductName, SUM(od.Quantity) as total_quantity
+                FROM orderdetails od
+                JOIN orders o ON od.OrderID = o.OrderID
+                JOIN products p ON od.ProductName = p.ProductID
+                WHERE o.OrderDate BETWEEN %s AND %s AND o.CompanyID = %s
+                GROUP BY p.ProductName
+            """, (start_date, end_date, company_id))
+        else:
+            cursor.execute("""
+                SELECT p.ProductName, SUM(od.Quantity) as total_quantity
+                FROM orderdetails od
+                JOIN orders o ON od.OrderID = o.OrderID
+                JOIN products p ON od.ProductName = p.ProductID
+                WHERE o.CompanyID = %s
+                GROUP BY p.ProductName
+            """, (company_id,))
+
+        data = cursor.fetchall()
+        labels = [row['ProductName'] for row in data]
+        values = [row['total_quantity'] for row in data]
+
+        return jsonify(labels=labels, values=values)
+    
+    except Error as err:
+        print(f"Error: {err}")
+        return jsonify(labels=[], values=[])
+    
+    
 if __name__ == '__main__':
     app.run(debug=True)
 
