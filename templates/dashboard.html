@@ -6,166 +6,214 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            height: 100vh;
-            background-color: #f0f2f5;
-        }
+       body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure body takes up full height */
+    background-color: #f0f2f5;
+}
 
-        h1 {
-            font-size: 2.5rem;
-            color: #333;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: 600;
-        }
+h1 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+}
 
-        .form-container {
-            margin-bottom: 20px;
-            text-align: center;
-        }
+.form-container {
+    margin-bottom: 20px;
+    text-align: center;
+    padding: 0 20px;
+}
 
-        label {
-            font-size: 1rem;
-            color: #555;
-            margin-right: 10px;
-        }
+label {
+    font-size: 1rem;
+    color: #555;
+    margin-right: 10px;
+}
 
-        input[type="date"] {
-            padding: 5px;
-            margin-right: 10px;
-        }
+input[type="date"] {
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    max-width: 150px; /* Set a maximum width for better alignment */
+}
 
-        button {
-            padding: 5px 10px;
-            font-size: 1rem;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px; /* Add margin to separate from other elements */
+}
 
-        button:hover {
-            background-color: #45a049;
-        }
+button:hover {
+    background-color: #45a049;
+}
 
-        .cards-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            padding: 20px;
-        }
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    margin: 0 auto;
+    flex: 1; /* Allow the container to grow and take available space */
+    overflow-y: auto; /* Ensure scrolling if content overflows */
+    max-height: calc(100vh - 120px); /* Adjust height based on header and footer height */
+}
 
-        .card {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            text-align: center;
-            width: 300px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+.card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    width: 300px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
 
-        .card:nth-child(1) {
-            background-color: #d1e7dd; /* Light green */
-        }
+.card:nth-child(1) {
+    background-color: #d1e7dd; /* Light green */
+}
 
-        .card:nth-child(2) {
-            background-color: #d6e0f0; /* Light blue */
-        }
+.card:nth-child(2) {
+    background-color: #d6e0f0; /* Light blue */
+}
 
-        .card:nth-child(3) {
-            background-color: #f8d7da; /* Light red */
-        }
+.card:nth-child(3) {
+    background-color: #f8d7da; /* Light red */
+}
 
-        .card:nth-child(4) {
-            background-color: #fff3cd; /* Light yellow */
-        }
+.card:nth-child(4) {
+    background-color: #fff3cd; /* Light yellow */
+}
 
-        .card:nth-child(5) {
-            background-color: #e2e3e5; /* Light gray */
-        }
+.card:nth-child(5) {
+    background-color: #e2e3e5; /* Light gray */
+}
 
-        .card:nth-child(6) {
-            background-color: #d4edda; /* Light green */
-        }
+.card:nth-child(6) {
+    background-color: #d4edda; /* Light green */
+}
 
-        .card:nth-child(7) {
-            background-color: #cce5ff; /* Light blue */
-        }
+.card:nth-child(7) {
+    background-color: #cce5ff; /* Light blue */
+}
 
-        .card:nth-child(8) {
-            background-color: #f5c6cb; /* Light red */
-        }
+.card:nth-child(8) {
+    background-color: #f5c6cb; /* Light red */
+}
 
-        .card:nth-child(9) {
-            background-color: #ffeeba; /* Light yellow */
-        }
+.card:nth-child(9) {
+    background-color: #ffeeba; /* Light yellow */
+}
 
-        .figure {
-            font-size: 2rem;
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
+.figure {
+    font-size: 2rem;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
 
-        .description {
-            font-size: 1.2rem;
-            color: #555;
-            font-weight: 300;
-            margin: 0;
-        }
+.description {
+    font-size: 1.2rem;
+    color: #555;
+    font-weight: 300;
+    margin: 0;
+}
 
-        h2 {
-            font-size: 1.5rem;
-            color: #333;
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
+h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
 
- #chart-popup {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
+#chart-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
 
-        #chart-content {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            position: relative;
-            width: 80%;
-            height: 80%;
-        }
+#chart-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+    width: 80%;
+    height: 80%;
+    overflow: auto; /* Allow scrolling inside the chart popup */
+}
 
-        #close-chart {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-            font-size: 20px;
-        }
+#close-chart {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* Media Queries for Mobile Devices */
+@media (max-width: 768px) {
+    body {
+        height: auto; /* Allow body to grow with content */
+    }
+
+    .form-container {
+        padding: 0 10px; /* Reduce padding on mobile */
+    }
+
+    input[type="date"] {
+        width: 90%; /* Full width on mobile */
+        max-width: none; /* Remove max width restriction */
+    }
+
+    button {
+        width: 100%; /* Full width on mobile */
+        max-width: 370px; /* Limit button width on mobile */
+    }
+
+    .cards-container {
+        max-height: calc(100vh - 120px); /* Adjust to ensure content can scroll */
+    }
+
+    .card {
+        width: 100%;
+        max-width: 300px; /* Limit card width */
+    }
+
+    #chart-popup {
+        height: 100vh; /* Full viewport height for the popup */
+    }
+
+    #chart-content {
+        width: 90%;
+        height: 80%;
+    }
+}
 
 
     </style>

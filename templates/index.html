@@ -5,111 +5,113 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pharmacy Homepage</title>
     <style>
-        /* General styling */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f7f9fc;
-            display: flex;
-            flex-direction: column;
-        }
+/* General styling */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f9fc;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure the body takes at least full viewport height */
+}
 
-        /* Sidebar */
-        .sidebar {
-            background-color: #e0f2f1; /* Light green */
-            width: 200px;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            z-index: 1;
-            overflow-y: auto;
-            transition: transform 0.3s ease;
-        }
+/* Sidebar */
+.sidebar {
+    background-color: #e0f2f1; /* Light green */
+    width: 200px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+}
 
-        .sidebar.hidden {
-            transform: translateX(-100%);
-        }
+.sidebar.hidden {
+    transform: translateX(-100%);
+}
 
-        .sidebar img.logo {
-            width: 60%;
-            height: auto;
-            display: block;
-            margin-bottom: 20px;
-            margin-left: 50px;
-            align-self: center;
-        }
+.sidebar img.logo {
+    width: 60%;
+    height: auto;
+    display: block;
+    margin-bottom: 20px;
+    margin-left: 50px;
+    align-self: center;
+}
 
-        .sidebar .menu-title {
-            background-color: #00796b; /* Dark teal */
-            color: white;
-            text-align: center;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
+.sidebar .menu-title {
+    background-color: #00796b; /* Dark teal */
+    color: white;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
 
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
 
-        .sidebar ul li {
-            display: flex;
-            align-items: center;
-            margin: 15px 0;
-            transition: background-color 0.3s ease;
-        }
+.sidebar ul li {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    transition: background-color 0.3s ease;
+}
 
-        .sidebar ul li:hover {
-            background-color: #b2dfdb; /* Light teal */
-            border-radius: 5px;
-            padding: 5px;
-        }
+.sidebar ul li:hover {
+    background-color: #b2dfdb; /* Light teal */
+    border-radius: 5px;
+    padding: 5px;
+}
 
-        .sidebar ul li img {
-            margin-right: 15px;
-            width: 30px;
-            height: 30px;
-        }
+.sidebar ul li img {
+    margin-right: 15px;
+    width: 30px;
+    height: 30px;
+}
 
-        .sidebar ul li a {
-            color: #00796b; /* Dark teal */
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 16px;
-        }
+.sidebar ul li a {
+    color: #00796b; /* Dark teal */
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+}
 
-        /* Close button for sidebar */
-        .sidebar .close-btn {
-            background-color: #00796b; /* Dark teal */
-            color: white;
-            border: none;
-            padding: 10px;
-            font-size: 20px;
-            cursor: pointer;
-            position: absolute;
-            top: 10px;
-            right: 50px;
-            border-radius: 50%;
-            z-index: 2; /* Ensure it's above the content */
-            display: none; /* Default to hidden */
-        }
+/* Close button for sidebar */
+.sidebar .close-btn {
+    background-color: #00796b; /* Dark teal */
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    border-radius: 50%;
+    z-index: 2; /* Ensure it's above the content */
+    display: none; /* Default to hidden */
+}
 
-        /* Header and main content */
-        .content {
-            margin-left: 15%;
-            padding: 20px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
+/* Header and main content */
+.content {
+    margin-left: 15%;
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 80px; /* Add space for the footer */
+}
 
-       header {
+header {
     background-color: #00796b; /* Dark teal */
     color: white;
     padding: 10px 30px;
@@ -123,26 +125,27 @@
     height: 60px; /* Set a fixed height for the header */
 }
 
-
-       header h1 {
+header h1 {
     margin: 0; /* Remove margin from header text */
     font-size: 2rem;
     font-weight: 600;
 }
-        header .toggle-sidebar {
-            display: none;
-            background-color: #00796b; /* Dark teal */
-            color: white;
-            border: none;
-            padding: 10px;
-            font-size: 16px;
-            cursor: pointer;
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            border-radius: 5px;
-            z-index: 3; /* Ensure it's above the content */
-        }
+
+header .toggle-sidebar {
+    display: none;
+    background-color: #00796b; /* Dark teal */
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    border-radius: 5px;
+    z-index: 3; /* Ensure it's above the content */
+}
+
 /* Main menu squares */
 .main-menu {
     display: grid;
@@ -181,94 +184,96 @@
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
+footer {
+    background-color: #00796b; /* Dark teal */
+    color: white;
+    text-align: center;
+    padding: 10px;
+    border-radius: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+    margin-left: 0%;
+    margin-right: 0%;
+    z-index: 0; /* Ensure it's above the content */
+}
 
-        footer {
-            background-color: #00796b; /* Dark teal */
-            color: white;
-            text-align: center;
-            padding: 1px 10px;
-            border-radius: 10px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            box-sizing: border-box;
-            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
-            margin-left: 0%;
-            margin-right: 0%;
-            width: 100%;
-        }
+footer p {
+    margin: 0;
+}
 
-        footer p {
-            margin: 0px 0;
-        }
+/* Logout Button Style */
+.logout-button {
+    background-color: #f44336; /* Red color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
 
-        /* Logout Button Style */
-        .logout-button {
-            background-color: #f44336; /* Red color */
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 10px;
-        }
+.logout-button:hover {
+    background-color: #d32f2f; /* Darker red */
+}
 
-        .logout-button:hover {
-            background-color: #d32f2f; /* Darker red */
-        }
+/* Media Queries for responsiveness */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        position: absolute;
+        transform: translateX(-100%);
+        z-index: 1; /* Behind other content */
+    }
 
-        /* Media Queries for responsiveness */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                max-width: 100%;
-                height: auto;
-                position: absolute;
-                transform: translateX(-100%);
-                z-index: 1; /* Behind other content */
-            }
+    .sidebar.show {
+        transform: translateX(0);
+    }
 
-            .sidebar.show {
-                transform: translateX(0);
-            }
+    .sidebar .close-btn {
+        display: inline-block; /* Show on mobile devices */
+    }
 
-            .sidebar .close-btn {
-                display: inline-block; /* Show on mobile devices */
-            }
+    header .toggle-sidebar {
+        display: inline-block;
+    }
 
-            header .toggle-sidebar {
-                display: inline-block;
-            }
+    .content {
+        margin-left: 0;
+        padding-top: 80px; /* Space for fixed header */
+        padding-bottom: 80px; /* Space for fixed footer */
+    }
 
-            .content {
-                margin-left: 0;
-                padding-top: 80px; /* Space for fixed header */
-            }
+    header {
+        padding: 10px;
+        position: relative;
+        width: 100%;
+    }
 
-            header {
-                padding: 10px;
-                position: relative;
-                width: 100%;
-            }
+    .main-menu {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
 
-            .main-menu {
-                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            }
+    .main-image {
+        width: 100%;
+        margin: 10px auto;
+    }
 
-            .main-image {
-                width: 100%;
-                margin: 10px auto;
-            }
+    footer {
+        padding: 10px;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+    }
+}
 
-            footer {
-                padding: 10px;
-                position: fixed;
-                width: 100%;
-            }
-        }
     </style>
 </head>
 <body>
