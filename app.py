@@ -19,14 +19,22 @@ logging.basicConfig(level=logging.DEBUG)
 
 load_dotenv()
 
+ # Debugging: Print the environment variables
+print("DATABASE_HOST:", os.getenv('DATABASE_HOST'))
+print("DATABASE_USER:", os.getenv('DATABASE_USER'))
+print("DATABASE_NAME:", os.getenv('DATABASE_NAME'))
+
 app = Flask(__name__)
 app.secret_key = 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1f2g3h4i5j6k7l8m9n0o1p2q3r4s5t6u7v8w9x0y1z2'
 
 def get_db():
     if 'db' not in g:
+
+       
+
         g.db = mysql.connector.connect(
             host=os.getenv('DATABASE_HOST'),
-            port=int(os.getenv('DATABASE_PORT', 19186)),  # Default to 3306 if not set
+            port=int(os.getenv('DATABASE_PORT', 10005)),  # Default to 3306 if not set
             user=os.getenv('DATABASE_USER'),
             password=os.getenv('DATABASE_PASSWORD'),
             database=os.getenv('DATABASE_NAME')
@@ -1892,7 +1900,7 @@ def chart_data():
     except Error as err:
         print(f"Error: {err}")
         return jsonify(labels=[], values=[])
-    
+
     
 if __name__ == '__main__':
     app.run(debug=True)
