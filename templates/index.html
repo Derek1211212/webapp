@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pharmacy Homepage</title>
-    <style>
-/* General styling */
+  
+     <style>
+    /* General styling */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -13,7 +14,7 @@ body {
     background-color: #f7f9fc;
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Ensure the body takes at least full viewport height */
+    min-height: 120vh;
 }
 
 /* Sidebar */
@@ -102,19 +103,10 @@ body {
 }
 
 /* Header and main content */
-.content {
-    margin-left: 15%;
-    padding: 20px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 80px; /* Add space for the footer */
-}
-
 header {
     background-color: #00796b; /* Dark teal */
     color: white;
-    padding: 10px 30px;
+    padding: 15px 30px;
     text-align: center;
     position: fixed;
     top: 0;
@@ -122,13 +114,36 @@ header {
     width: 100%;
     z-index: 1; /* Ensure it's above the content */
     box-sizing: border-box;
-    height: 60px; /* Set a fixed height for the header */
+    height: 90px;
 }
+
+/* Adjust header height for mobile screens */
+@media (max-width: 768px) {
+    header {
+        height: 120px; /* Adjusted height for mobile devices */
+        padding: 10px 15px;
+    }
+
+    header h1 {
+        font-size: 1.8rem; /* Adjusted font size for smaller screens */
+    }
+}
+
+
 
 header h1 {
     margin: 0; /* Remove margin from header text */
-    font-size: 2rem;
-    font-weight: 600;
+    font-size: 2.3rem; /* Adjusted font size */
+    font-weight: 400;
+}
+
+.content {
+    margin-left: 220px; /* Adjusted for the sidebar width */
+    padding: 20px;
+    padding-top: 100px; /* Ensures content is beneath the header */
+    flex: 1;
+    padding-bottom: 80px; /* Space for the footer */
+    box-sizing: border-box;
 }
 
 header .toggle-sidebar {
@@ -151,9 +166,10 @@ header .toggle-sidebar {
     display: grid;
     grid-template-columns: repeat(4, 1fr); /* 4 columns */
     gap: 10px;
-    padding: 20px;
-    margin-top: 25px; /* Adjust to ensure space below the header */
+    padding: 0; /* Removed padding */
+    margin-top: 0; /* Removed margin */
     grid-auto-rows: minmax(150px, auto); /* Ensure items can expand */
+    box-sizing: border-box;
 }
 
 .menu-item {
@@ -164,6 +180,11 @@ header .toggle-sidebar {
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease, background-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 }
 
 .menu-item img {
@@ -195,8 +216,6 @@ footer {
     width: 100%;
     box-sizing: border-box;
     box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
-    margin-left: 0%;
-    margin-right: 0%;
     z-index: 0; /* Ensure it's above the content */
 }
 
@@ -247,7 +266,7 @@ footer p {
 
     .content {
         margin-left: 0;
-        padding-top: 80px; /* Space for fixed header */
+        padding-top: 10px; /* Space for fixed header */
         padding-bottom: 80px; /* Space for fixed footer */
     }
 
@@ -274,7 +293,8 @@ footer p {
     }
 }
 
-    </style>
+
+</style>
 </head>
 <body>
     <header>
